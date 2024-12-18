@@ -70,7 +70,7 @@ Set the base directory for the project and load the processed `combined_clin` da
 
 ```{r setup2}
 # Set base directory
-Base_dir <- "~/BHK lab/EcoTyper_Project/Scripts/"
+Base_dir <- "~/BHK lab/Ecotyper_Project/"
 
 input_dir <- file.path(Base_dir, "data_all")
 output_dir <- file.path(Base_dir, "outputs", "Cibersort_Alldatasets_outputs")
@@ -113,7 +113,7 @@ Extracts the unique study cohorts from the Immunotherpy dataset and displays the
 | ICB_Rittmeyer   | Lung            | 699         | PFS/OS                   | PD-1/PD-L1, chemo                  | [27979383](https://pubmed.ncbi.nlm.nih.gov/27979383/) |
 | ICB_Snyder      | Ureteral        | 25          | PFS/OS                   | PD-1/PD-L1                         | [28552987](https://pubmed.ncbi.nlm.nih.gov/28552987/) |
 | ICB_Van_Allen   | Melanoma        | 42          | PFS/OS                   | CTLA4                              | [26359337](https://pubmed.ncbi.nlm.nih.gov/26359337/) |
-| ICB_VanDenEnde  | Esophageal      | 35
+| ICB_VanDenEnde  | Esophageal      | 35          | PFS/OS                   | PD-L1                               | [26359337](https://pubmed.ncbi.nlm.nih.gov/33504550/) |
 
 ### List of Datasets Used in the Analysis (Stratified by Cancer Type and Treatment)
 

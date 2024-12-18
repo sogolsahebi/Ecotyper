@@ -72,7 +72,8 @@ The RNA-seq expression values are originally in **log2(TPM + 0.001)** format and
 ```{r setup and load }
 
 # Environment Setup
-Base_dir <- "C:/Users/azita/OneDrive/Documents/BHK lab/EcoTyper_Project"
+
+Base_dir <- "~/BHK lab/Ecotyper_Project/"
 
 input_dir <- file.path(Base_dir, "data_all")
 output_dir <- file.path(Base_dir, "outputs", "Deconvolution_Jung_outputs")

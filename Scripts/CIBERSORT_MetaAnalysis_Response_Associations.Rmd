@@ -68,7 +68,7 @@ Display OS, PFS, and Response results from the previous script: [CIBERSORT_AllDa
 
 ```{r setup2}
 # Set base directory
-Base_dir <- "~/BHK lab/EcoTyper_Project/"
+Base_dir <- "~/BHK lab/Ecotyper_Project/"
 
 # Define input and output directories
 input_dir <- file.path(Base_dir, "data_all")

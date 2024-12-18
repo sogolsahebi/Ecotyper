@@ -39,7 +39,7 @@ This section will list and display all `.rda` files from the `data_all` and `dat
 ```{r  all data}
 
 # Set base directory
-Base_dir <- "~/BHK lab/EcoTyper_Project/"
+Base_dir <- "~/BHK lab/Ecotyper_Project/"
 
 # List .rda files in both directories
 data_files <- list.files(path = file.path(Base_dir, "data_all"), pattern = "\\.rda$", full.names = TRUE)
