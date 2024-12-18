@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Fehrenbacher__Lung__PD-(L)1",0.536,0.43,70,0.212881801849635,"Lung","PD-(L)1",0.585424955086497
+"2","R vs NR","B_cells_memory","ICB_Fehrenbacher__Lung__PD-(L)1",0.145,0.332,70,0.663018171435909,"Lung","PD-(L)1",0.911649985724375
+"3","R vs NR","Plasma_cells","ICB_Fehrenbacher__Lung__PD-(L)1",-0.441,0.245,70,0.0718637720522834,"Lung","PD-(L)1",0.580815505560612
+"4","R vs NR","T_cells_CD8","ICB_Fehrenbacher__Lung__PD-(L)1",0.086,0.303,70,0.777020759518439,"Lung","PD-(L)1",0.949692039411426
+"5","R vs NR","T_cells_CD4_naive","ICB_Fehrenbacher__Lung__PD-(L)1",0.701,0.709,70,0.323026574914495,"Lung","PD-(L)1",0.632243891338124
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Fehrenbacher__Lung__PD-(L)1",-0.32,0.288,70,0.266297647093647,"Lung","PD-(L)1",0.627429609573375
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Fehrenbacher__Lung__PD-(L)1",-0.403,0.273,70,0.140255075355535,"Lung","PD-(L)1",0.585424955086497
+"8","R vs NR","T_cells_follicular_helper","ICB_Fehrenbacher__Lung__PD-(L)1",0.659,0.391,70,0.0915105777340793,"Lung","PD-(L)1",0.580815505560612
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Fehrenbacher__Lung__PD-(L)1",284.822,29167.596,70,0.992208758443011,"Lung","PD-(L)1",0.992208758443011
+"10","R vs NR","T_cells_gamma_delta","ICB_Fehrenbacher__Lung__PD-(L)1",-0.326,0.258,70,0.206630515450223,"Lung","PD-(L)1",0.585424955086497
+"11","R vs NR","NK_cells_resting","ICB_Fehrenbacher__Lung__PD-(L)1",0.058,0.36,70,0.872504571270486,"Lung","PD-(L)1",0.992208758443011
+"12","R vs NR","NK_cells_activated","ICB_Fehrenbacher__Lung__PD-(L)1",0.036,0.313,70,0.909604342802441,"Lung","PD-(L)1",0.992208758443011
+"13","R vs NR","Monocytes","ICB_Fehrenbacher__Lung__PD-(L)1",1.404,0.868,70,0.105602819192839,"Lung","PD-(L)1",0.580815505560612
+"14","R vs NR","Macrophages_M0","ICB_Fehrenbacher__Lung__PD-(L)1",0.272,0.331,70,0.411942266443753,"Lung","PD-(L)1",0.697133066289429
+"15","R vs NR","Macrophages_M1","ICB_Fehrenbacher__Lung__PD-(L)1",-0.485,0.289,70,0.0929706854943382,"Lung","PD-(L)1",0.580815505560612
+"16","R vs NR","Macrophages_M2","ICB_Fehrenbacher__Lung__PD-(L)1",0.214,0.308,70,0.486704895147034,"Lung","PD-(L)1",0.764821978088196
+"17","R vs NR","Dendritic_cells_resting","ICB_Fehrenbacher__Lung__PD-(L)1",-0.325,0.304,70,0.285195277078807,"Lung","PD-(L)1",0.627429609573375
+"18","R vs NR","Dendritic_cells_activated","ICB_Fehrenbacher__Lung__PD-(L)1",0.004,0.279,70,0.989372307374392,"Lung","PD-(L)1",0.992208758443011
+"19","R vs NR","Mast_cells_resting","ICB_Fehrenbacher__Lung__PD-(L)1",0.551,0.427,70,0.197376562768334,"Lung","PD-(L)1",0.585424955086497
+"20","R vs NR","Mast_cells_activated","ICB_Fehrenbacher__Lung__PD-(L)1",-0.12,0.26,70,0.645291955474382,"Lung","PD-(L)1",0.911649985724375
+"21","R vs NR","Eosinophils","ICB_Fehrenbacher__Lung__PD-(L)1",-0.125,0.341,70,0.71456226332067,"Lung","PD-(L)1",0.924727634885573
+"22","R vs NR","Neutrophils","ICB_Fehrenbacher__Lung__PD-(L)1",0.809,0.857,70,0.344860304366249,"Lung","PD-(L)1",0.632243891338124

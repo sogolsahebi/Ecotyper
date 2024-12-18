@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Van_Allen__Melanoma__CTLA4",0.09,0.441,39,0.837614755724842,"Melanoma","CTLA4",0.921376231297326
+"2","R vs NR","B_cells_memory","ICB_Van_Allen__Melanoma__CTLA4",-0.243,0.357,39,0.49563637093454,"Melanoma","CTLA4",0.795417014436375
+"3","R vs NR","Plasma_cells","ICB_Van_Allen__Melanoma__CTLA4",-0.259,0.356,39,0.467504808406301,"Melanoma","CTLA4",0.795417014436375
+"4","R vs NR","T_cells_CD8","ICB_Van_Allen__Melanoma__CTLA4",-0.495,0.379,39,0.191603480658069,"Melanoma","CTLA4",0.795417014436375
+"5","R vs NR","T_cells_CD4_naive","ICB_Van_Allen__Melanoma__CTLA4",-0.164,0.373,39,0.659845979546971,"Melanoma","CTLA4",0.795417014436375
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Van_Allen__Melanoma__CTLA4",0.468,0.485,39,0.334565070665293,"Melanoma","CTLA4",0.795417014436375
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Van_Allen__Melanoma__CTLA4",0.269,0.459,39,0.557808773860938,"Melanoma","CTLA4",0.795417014436375
+"8","R vs NR","T_cells_follicular_helper","ICB_Van_Allen__Melanoma__CTLA4",-0.338,0.365,39,0.355303306259762,"Melanoma","CTLA4",0.795417014436375
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Van_Allen__Melanoma__CTLA4",0.35,0.511,39,0.494146215762142,"Melanoma","CTLA4",0.795417014436375
+"10","R vs NR","T_cells_gamma_delta","ICB_Van_Allen__Melanoma__CTLA4",0.337,0.837,39,0.686951057922324,"Melanoma","CTLA4",0.795417014436375
+"11","R vs NR","NK_cells_resting","ICB_Van_Allen__Melanoma__CTLA4",0.412,0.497,39,0.407102921473007,"Melanoma","CTLA4",0.795417014436375
+"12","R vs NR","NK_cells_activated","ICB_Van_Allen__Melanoma__CTLA4",-0.424,0.366,39,0.245823940803769,"Melanoma","CTLA4",0.795417014436375
+"13","R vs NR","Monocytes","ICB_Van_Allen__Melanoma__CTLA4",-0.206,0.376,39,0.584702721284074,"Melanoma","CTLA4",0.795417014436375
+"14","R vs NR","Macrophages_M0","ICB_Van_Allen__Melanoma__CTLA4",0.712,0.552,39,0.196929374512443,"Melanoma","CTLA4",0.795417014436375
+"15","R vs NR","Macrophages_M1","ICB_Van_Allen__Melanoma__CTLA4",-0.535,0.367,39,0.144838951979384,"Melanoma","CTLA4",0.795417014436375
+"16","R vs NR","Macrophages_M2","ICB_Van_Allen__Melanoma__CTLA4",-0.159,0.382,39,0.676667577132599,"Melanoma","CTLA4",0.795417014436375
+"17","R vs NR","Dendritic_cells_resting","ICB_Van_Allen__Melanoma__CTLA4",-0.281,0.326,39,0.389802165034404,"Melanoma","CTLA4",0.795417014436375
+"18","R vs NR","Dendritic_cells_activated","ICB_Van_Allen__Melanoma__CTLA4",12.979,2243.693,39,0.995384420789878,"Melanoma","CTLA4",0.995384420789878
+"19","R vs NR","Mast_cells_resting","ICB_Van_Allen__Melanoma__CTLA4",0.256,0.425,39,0.547511926675125,"Melanoma","CTLA4",0.795417014436375
+"20","R vs NR","Mast_cells_activated","ICB_Van_Allen__Melanoma__CTLA4",-0.144,0.356,39,0.68650881682059,"Melanoma","CTLA4",0.795417014436375
+"21","R vs NR","Eosinophils","ICB_Van_Allen__Melanoma__CTLA4",-0.283,0.406,39,0.4853537433282,"Melanoma","CTLA4",0.795417014436375
+"22","R vs NR","Neutrophils","ICB_Van_Allen__Melanoma__CTLA4",6.085,721.999,39,0.993276056288091,"Melanoma","CTLA4",0.995384420789878

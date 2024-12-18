@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Liu__Melanoma__IO+combo",0.2,0.328,43,0.541891404422033,"Melanoma","IO+combo",0.851543635520338
+"2","R vs NR","B_cells_memory","ICB_Liu__Melanoma__IO+combo",-0.368,0.336,43,0.272973279990805,"Melanoma","IO+combo",0.841441020104038
+"3","R vs NR","Plasma_cells","ICB_Liu__Melanoma__IO+combo",-0.181,0.355,43,0.609688031153924,"Melanoma","IO+combo",0.894209112359089
+"4","R vs NR","T_cells_CD8","ICB_Liu__Melanoma__IO+combo",0.073,0.325,43,0.822173220655573,"Melanoma","IO+combo",0.904390542721131
+"5","R vs NR","T_cells_CD4_naive","ICB_Liu__Melanoma__IO+combo",1.079,0.776,43,0.164248171882383,"Melanoma","IO+combo",0.841441020104038
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Liu__Melanoma__IO+combo",-0.21,0.309,43,0.497215148243295,"Melanoma","IO+combo",0.841441020104038
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Liu__Melanoma__IO+combo",-0.107,0.306,43,0.725216751156615,"Melanoma","IO+combo",0.904390542721131
+"8","R vs NR","T_cells_follicular_helper","ICB_Liu__Melanoma__IO+combo",-0.132,0.303,43,0.663066042522912,"Melanoma","IO+combo",0.904390542721131
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Liu__Melanoma__IO+combo",-0.361,0.341,43,0.290036504073075,"Melanoma","IO+combo",0.841441020104038
+"10","R vs NR","T_cells_gamma_delta","ICB_Liu__Melanoma__IO+combo",-0.037,0.299,43,0.901921467479909,"Melanoma","IO+combo",0.921847203110254
+"11","R vs NR","NK_cells_resting","ICB_Liu__Melanoma__IO+combo",0.03,0.311,43,0.921847203110254,"Melanoma","IO+combo",0.921847203110254
+"12","R vs NR","NK_cells_activated","ICB_Liu__Melanoma__IO+combo",0.078,0.315,43,0.804252897735081,"Melanoma","IO+combo",0.904390542721131
+"13","R vs NR","Monocytes","ICB_Liu__Melanoma__IO+combo",0.256,0.329,43,0.436148075500845,"Melanoma","IO+combo",0.841441020104038
+"14","R vs NR","Macrophages_M0","ICB_Liu__Melanoma__IO+combo",-0.236,0.319,43,0.457999518124346,"Melanoma","IO+combo",0.841441020104038
+"15","R vs NR","Macrophages_M1","ICB_Liu__Melanoma__IO+combo",-0.305,0.335,43,0.362396273118042,"Melanoma","IO+combo",0.841441020104038
+"16","R vs NR","Macrophages_M2","ICB_Liu__Melanoma__IO+combo",0.401,0.371,43,0.279583074355138,"Melanoma","IO+combo",0.841441020104038
+"17","R vs NR","Dendritic_cells_resting","ICB_Liu__Melanoma__IO+combo",-0.378,0.32,43,0.237677627896944,"Melanoma","IO+combo",0.841441020104038
+"18","R vs NR","Dendritic_cells_activated","ICB_Liu__Melanoma__IO+combo",0.564,0.762,43,0.459396930208557,"Melanoma","IO+combo",0.841441020104038
+"19","R vs NR","Mast_cells_resting","ICB_Liu__Melanoma__IO+combo",0.082,0.314,43,0.794456033880689,"Melanoma","IO+combo",0.904390542721131
+"20","R vs NR","Mast_cells_activated","ICB_Liu__Melanoma__IO+combo",0.513,0.504,43,0.308869962468459,"Melanoma","IO+combo",0.841441020104038
+"21","R vs NR","Eosinophils","ICB_Liu__Melanoma__IO+combo",0.262,0.34,43,0.441837720080492,"Melanoma","IO+combo",0.841441020104038
+"22","R vs NR","Neutrophils","ICB_Liu__Melanoma__IO+combo",-0.346,0.446,43,0.437545288742464,"Melanoma","IO+combo",0.841441020104038

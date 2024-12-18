@@ -1,0 +1,21 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Snyder__Ureteral__PD-(L)1",-0.056,0.455,18,0.9018588375945,"Ureteral","PD-(L)1",0.994372981117725
+"2","R vs NR","B_cells_memory","ICB_Snyder__Ureteral__PD-(L)1",-0.221,0.441,18,0.615929891349687,"Ureteral","PD-(L)1",0.952781270471183
+"3","R vs NR","Plasma_cells","ICB_Snyder__Ureteral__PD-(L)1",-0.543,0.538,18,0.31302482020224,"Ureteral","PD-(L)1",0.952781270471183
+"4","R vs NR","T_cells_CD8","ICB_Snyder__Ureteral__PD-(L)1",0.33,0.724,18,0.648258173072154,"Ureteral","PD-(L)1",0.952781270471183
+"5","R vs NR","T_cells_CD4_naive","ICB_Snyder__Ureteral__PD-(L)1",-1.34,1.005,18,0.182629123587507,"Ureteral","PD-(L)1",0.952781270471183
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Snyder__Ureteral__PD-(L)1",0.246,0.541,18,0.649460080033383,"Ureteral","PD-(L)1",0.952781270471183
+"7","R vs NR","T_cells_follicular_helper","ICB_Snyder__Ureteral__PD-(L)1",0.473,0.531,18,0.373045934709531,"Ureteral","PD-(L)1",0.952781270471183
+"8","R vs NR","T_cells_regulatory_.Tregs.","ICB_Snyder__Ureteral__PD-(L)1",0.582,0.676,18,0.388800864010261,"Ureteral","PD-(L)1",0.952781270471183
+"9","R vs NR","T_cells_gamma_delta","ICB_Snyder__Ureteral__PD-(L)1",0.125,0.438,18,0.774708152893985,"Ureteral","PD-(L)1",0.968385191117481
+"10","R vs NR","NK_cells_resting","ICB_Snyder__Ureteral__PD-(L)1",-0.299,0.508,18,0.555826466303717,"Ureteral","PD-(L)1",0.952781270471183
+"11","R vs NR","NK_cells_activated","ICB_Snyder__Ureteral__PD-(L)1",-6.737,955.262,18,0.994372981117725,"Ureteral","PD-(L)1",0.994372981117725
+"12","R vs NR","Monocytes","ICB_Snyder__Ureteral__PD-(L)1",0.021,0.474,18,0.964814455916399,"Ureteral","PD-(L)1",0.994372981117725
+"13","R vs NR","Macrophages_M0","ICB_Snyder__Ureteral__PD-(L)1",-0.165,0.472,18,0.7269926582761,"Ureteral","PD-(L)1",0.968385191117481
+"14","R vs NR","Macrophages_M1","ICB_Snyder__Ureteral__PD-(L)1",-0.029,0.444,18,0.947865170736757,"Ureteral","PD-(L)1",0.994372981117725
+"15","R vs NR","Macrophages_M2","ICB_Snyder__Ureteral__PD-(L)1",0.239,0.554,18,0.666946889329828,"Ureteral","PD-(L)1",0.952781270471183
+"16","R vs NR","Dendritic_cells_resting","ICB_Snyder__Ureteral__PD-(L)1",0.689,0.585,18,0.238525697683935,"Ureteral","PD-(L)1",0.952781270471183
+"17","R vs NR","Mast_cells_resting","ICB_Snyder__Ureteral__PD-(L)1",-0.7,0.989,18,0.479101058325859,"Ureteral","PD-(L)1",0.952781270471183
+"18","R vs NR","Mast_cells_activated","ICB_Snyder__Ureteral__PD-(L)1",0.572,0.539,18,0.288909004899916,"Ureteral","PD-(L)1",0.952781270471183
+"19","R vs NR","Eosinophils","ICB_Snyder__Ureteral__PD-(L)1",0.422,0.651,18,0.516662285852933,"Ureteral","PD-(L)1",0.952781270471183
+"20","R vs NR","Neutrophils","ICB_Snyder__Ureteral__PD-(L)1",0.534,0.848,18,0.528903316188193,"Ureteral","PD-(L)1",0.952781270471183

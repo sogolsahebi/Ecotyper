@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Rittmeyer__Lung__PD-(L)1",0.134,0.171,274,0.433415567483536,"Lung","PD-(L)1",0.720687083750938
+"2","R vs NR","B_cells_memory","ICB_Rittmeyer__Lung__PD-(L)1",0.048,0.167,274,0.775241797665608,"Lung","PD-(L)1",0.851961079573165
+"3","R vs NR","Plasma_cells","ICB_Rittmeyer__Lung__PD-(L)1",-0.122,0.151,274,0.419399059053313,"Lung","PD-(L)1",0.720687083750938
+"4","R vs NR","T_cells_CD8","ICB_Rittmeyer__Lung__PD-(L)1",-0.26,0.135,274,0.0534600368484557,"Lung","PD-(L)1",0.438469570736802
+"5","R vs NR","T_cells_CD4_naive","ICB_Rittmeyer__Lung__PD-(L)1",0.261,0.244,274,0.284492411654355,"Lung","PD-(L)1",0.695425895155091
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Rittmeyer__Lung__PD-(L)1",0.288,0.163,274,0.0783915810968443,"Lung","PD-(L)1",0.438469570736802
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Rittmeyer__Lung__PD-(L)1",-0.244,0.139,274,0.0797217401339639,"Lung","PD-(L)1",0.438469570736802
+"8","R vs NR","T_cells_follicular_helper","ICB_Rittmeyer__Lung__PD-(L)1",-0.177,0.15,274,0.238691883228925,"Lung","PD-(L)1",0.666529933200635
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Rittmeyer__Lung__PD-(L)1",0.088,0.168,274,0.599190715450376,"Lung","PD-(L)1",0.823887233744267
+"10","R vs NR","T_cells_gamma_delta","ICB_Rittmeyer__Lung__PD-(L)1",-0.162,0.138,274,0.238908007743861,"Lung","PD-(L)1",0.666529933200635
+"11","R vs NR","NK_cells_resting","ICB_Rittmeyer__Lung__PD-(L)1",0.066,0.167,274,0.694739110863693,"Lung","PD-(L)1",0.851961079573165
+"12","R vs NR","NK_cells_activated","ICB_Rittmeyer__Lung__PD-(L)1",-0.205,0.139,274,0.139197340839639,"Lung","PD-(L)1",0.612468299694414
+"13","R vs NR","Monocytes","ICB_Rittmeyer__Lung__PD-(L)1",-0.001,0.173,274,0.995951304389639,"Lung","PD-(L)1",0.995951304389639
+"14","R vs NR","Macrophages_M0","ICB_Rittmeyer__Lung__PD-(L)1",0.189,0.162,274,0.242374521163867,"Lung","PD-(L)1",0.666529933200635
+"15","R vs NR","Macrophages_M1","ICB_Rittmeyer__Lung__PD-(L)1",-0.442,0.147,274,0.00267154469795107,"Lung","PD-(L)1",0.0587739833549235
+"16","R vs NR","Macrophages_M2","ICB_Rittmeyer__Lung__PD-(L)1",0.038,0.157,274,0.808210628111303,"Lung","PD-(L)1",0.851961079573165
+"17","R vs NR","Dendritic_cells_resting","ICB_Rittmeyer__Lung__PD-(L)1",-0.035,0.148,274,0.813235575956203,"Lung","PD-(L)1",0.851961079573165
+"18","R vs NR","Dendritic_cells_activated","ICB_Rittmeyer__Lung__PD-(L)1",0.119,0.166,274,0.471640401105938,"Lung","PD-(L)1",0.720687083750938
+"19","R vs NR","Mast_cells_resting","ICB_Rittmeyer__Lung__PD-(L)1",0.142,0.206,274,0.491377557102912,"Lung","PD-(L)1",0.720687083750938
+"20","R vs NR","Mast_cells_activated","ICB_Rittmeyer__Lung__PD-(L)1",0.04,0.164,274,0.805090949307734,"Lung","PD-(L)1",0.851961079573165
+"21","R vs NR","Eosinophils","ICB_Rittmeyer__Lung__PD-(L)1",0.169,0.173,274,0.328171785022584,"Lung","PD-(L)1",0.720687083750938
+"22","R vs NR","Neutrophils","ICB_Rittmeyer__Lung__PD-(L)1",-0.104,0.126,274,0.407459041740881,"Lung","PD-(L)1",0.720687083750938

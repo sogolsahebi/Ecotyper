@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Miao1__Kidney__PD-(L)1",-0.182,0.417,28,0.662307275076308,"Kidney","PD-(L)1",0.994785557864922
+"2","R vs NR","B_cells_memory","ICB_Miao1__Kidney__PD-(L)1",-0.177,0.517,28,0.73237043485505,"Kidney","PD-(L)1",0.994785557864922
+"3","R vs NR","Plasma_cells","ICB_Miao1__Kidney__PD-(L)1",0.298,0.507,28,0.556745997814878,"Kidney","PD-(L)1",0.994785557864922
+"4","R vs NR","T_cells_CD8","ICB_Miao1__Kidney__PD-(L)1",0.59,0.518,28,0.254749232768103,"Kidney","PD-(L)1",0.994785557864922
+"5","R vs NR","T_cells_CD4_naive","ICB_Miao1__Kidney__PD-(L)1",41.609,6366.758,28,0.994785557864922,"Kidney","PD-(L)1",0.994785557864922
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Miao1__Kidney__PD-(L)1",-0.888,0.483,28,0.0658294222657004,"Kidney","PD-(L)1",0.994785557864922
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Miao1__Kidney__PD-(L)1",0.792,0.865,28,0.359679313017983,"Kidney","PD-(L)1",0.994785557864922
+"8","R vs NR","T_cells_follicular_helper","ICB_Miao1__Kidney__PD-(L)1",-0.206,0.371,28,0.579361291629266,"Kidney","PD-(L)1",0.994785557864922
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Miao1__Kidney__PD-(L)1",0.126,0.441,28,0.77432849013459,"Kidney","PD-(L)1",0.994785557864922
+"10","R vs NR","T_cells_gamma_delta","ICB_Miao1__Kidney__PD-(L)1",0.524,0.674,28,0.437475892524173,"Kidney","PD-(L)1",0.994785557864922
+"11","R vs NR","NK_cells_resting","ICB_Miao1__Kidney__PD-(L)1",-0.068,0.371,28,0.855678022572788,"Kidney","PD-(L)1",0.994785557864922
+"12","R vs NR","NK_cells_activated","ICB_Miao1__Kidney__PD-(L)1",0.132,0.38,28,0.728740759442961,"Kidney","PD-(L)1",0.994785557864922
+"13","R vs NR","Monocytes","ICB_Miao1__Kidney__PD-(L)1",-0.18,0.378,28,0.633496748438591,"Kidney","PD-(L)1",0.994785557864922
+"14","R vs NR","Macrophages_M0","ICB_Miao1__Kidney__PD-(L)1",0.112,0.386,28,0.772686990659635,"Kidney","PD-(L)1",0.994785557864922
+"15","R vs NR","Macrophages_M1","ICB_Miao1__Kidney__PD-(L)1",0.607,0.558,28,0.27681658077,"Kidney","PD-(L)1",0.994785557864922
+"16","R vs NR","Macrophages_M2","ICB_Miao1__Kidney__PD-(L)1",0.168,0.384,28,0.661799933017433,"Kidney","PD-(L)1",0.994785557864922
+"17","R vs NR","Dendritic_cells_resting","ICB_Miao1__Kidney__PD-(L)1",0.027,0.438,28,0.950984221262203,"Kidney","PD-(L)1",0.994785557864922
+"18","R vs NR","Dendritic_cells_activated","ICB_Miao1__Kidney__PD-(L)1",-0.393,0.756,28,0.602750538914922,"Kidney","PD-(L)1",0.994785557864922
+"19","R vs NR","Mast_cells_resting","ICB_Miao1__Kidney__PD-(L)1",0.026,0.461,28,0.954616988169345,"Kidney","PD-(L)1",0.994785557864922
+"20","R vs NR","Mast_cells_activated","ICB_Miao1__Kidney__PD-(L)1",-0.335,0.381,28,0.379177916352926,"Kidney","PD-(L)1",0.994785557864922
+"21","R vs NR","Eosinophils","ICB_Miao1__Kidney__PD-(L)1",171.097,25428.445,28,0.994631431545092,"Kidney","PD-(L)1",0.994785557864922
+"22","R vs NR","Neutrophils","ICB_Miao1__Kidney__PD-(L)1",-0.085,0.372,28,0.819056605322354,"Kidney","PD-(L)1",0.994785557864922

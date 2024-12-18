@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Damrauer__Bladder__PD-(L)1",0.249,0.343,86,0.467402348598989,"Bladder","PD-(L)1",0.790200037717717
+"2","R vs NR","B_cells_memory","ICB_Damrauer__Bladder__PD-(L)1",0.261,0.339,86,0.440782187436447,"Bladder","PD-(L)1",0.790200037717717
+"3","R vs NR","Plasma_cells","ICB_Damrauer__Bladder__PD-(L)1",-0.023,0.267,86,0.931823691604628,"Bladder","PD-(L)1",0.99409887896575
+"4","R vs NR","T_cells_CD8","ICB_Damrauer__Bladder__PD-(L)1",-0.314,0.275,86,0.254583329942999,"Bladder","PD-(L)1",0.790200037717717
+"5","R vs NR","T_cells_CD4_naive","ICB_Damrauer__Bladder__PD-(L)1",4.985,5.345,86,0.351069529651441,"Bladder","PD-(L)1",0.790200037717717
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Damrauer__Bladder__PD-(L)1",0.135,0.284,86,0.634997290079625,"Bladder","PD-(L)1",0.821761198926573
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Damrauer__Bladder__PD-(L)1",-0.638,0.245,86,0.00938564458124641,"Bladder","PD-(L)1",0.206484180787421
+"8","R vs NR","T_cells_follicular_helper","ICB_Damrauer__Bladder__PD-(L)1",-0.145,0.26,86,0.577513628246248,"Bladder","PD-(L)1",0.821761198926573
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Damrauer__Bladder__PD-(L)1",-0.304,0.243,86,0.209686815080127,"Bladder","PD-(L)1",0.790200037717717
+"10","R vs NR","T_cells_gamma_delta","ICB_Damrauer__Bladder__PD-(L)1",1.495,153.412,86,0.992226423899181,"Bladder","PD-(L)1",0.99409887896575
+"11","R vs NR","NK_cells_resting","ICB_Damrauer__Bladder__PD-(L)1",-0.472,0.258,86,0.0672836453677151,"Bladder","PD-(L)1",0.740120099044866
+"12","R vs NR","NK_cells_activated","ICB_Damrauer__Bladder__PD-(L)1",-0.106,0.268,86,0.693008902403287,"Bladder","PD-(L)1",0.847010880715128
+"13","R vs NR","Monocytes","ICB_Damrauer__Bladder__PD-(L)1",0.405,0.318,86,0.203687301680816,"Bladder","PD-(L)1",0.790200037717717
+"14","R vs NR","Macrophages_M0","ICB_Damrauer__Bladder__PD-(L)1",0.238,0.31,86,0.443167677970792,"Bladder","PD-(L)1",0.790200037717717
+"15","R vs NR","Macrophages_M1","ICB_Damrauer__Bladder__PD-(L)1",-0.355,0.243,86,0.143938538062034,"Bladder","PD-(L)1",0.790200037717717
+"16","R vs NR","Macrophages_M2","ICB_Damrauer__Bladder__PD-(L)1",-0.028,0.273,86,0.918168867724304,"Bladder","PD-(L)1",0.99409887896575
+"17","R vs NR","Dendritic_cells_resting","ICB_Damrauer__Bladder__PD-(L)1",149.136,20164.331,86,0.99409887896575,"Bladder","PD-(L)1",0.99409887896575
+"18","R vs NR","Dendritic_cells_activated","ICB_Damrauer__Bladder__PD-(L)1",0.409,0.344,86,0.234062218008145,"Bladder","PD-(L)1",0.790200037717717
+"19","R vs NR","Mast_cells_resting","ICB_Damrauer__Bladder__PD-(L)1",-0.21,0.251,86,0.402722947264589,"Bladder","PD-(L)1",0.790200037717717
+"20","R vs NR","Mast_cells_activated","ICB_Damrauer__Bladder__PD-(L)1",0.263,0.392,86,0.502854569456729,"Bladder","PD-(L)1",0.790200037717717
+"21","R vs NR","Eosinophils","ICB_Damrauer__Bladder__PD-(L)1",-0.11,0.23,86,0.632539414271951,"Bladder","PD-(L)1",0.821761198926573
+"22","R vs NR","Neutrophils","ICB_Damrauer__Bladder__PD-(L)1",0.229,0.327,86,0.484617555829139,"Bladder","PD-(L)1",0.790200037717717

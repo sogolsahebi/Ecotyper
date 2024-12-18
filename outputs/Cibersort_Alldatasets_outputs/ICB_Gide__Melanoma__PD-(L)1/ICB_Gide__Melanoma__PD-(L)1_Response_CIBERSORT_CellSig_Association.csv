@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Gide__Melanoma__PD-(L)1",-0.08,0.326,38,0.806845704568629,"Melanoma","PD-(L)1",0.845266928595707
+"2","R vs NR","B_cells_memory","ICB_Gide__Melanoma__PD-(L)1",-0.462,0.365,38,0.205734511526002,"Melanoma","PD-(L)1",0.411469023052004
+"3","R vs NR","Plasma_cells","ICB_Gide__Melanoma__PD-(L)1",-0.239,0.338,38,0.479840504149295,"Melanoma","PD-(L)1",0.659780693205281
+"4","R vs NR","T_cells_CD8","ICB_Gide__Melanoma__PD-(L)1",-0.518,0.368,38,0.159841596720035,"Melanoma","PD-(L)1",0.351651512784077
+"5","R vs NR","T_cells_CD4_naive","ICB_Gide__Melanoma__PD-(L)1",-0.727,0.412,38,0.0776814643381188,"Melanoma","PD-(L)1",0.274067492367326
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Gide__Melanoma__PD-(L)1",0.657,0.399,38,0.0996609063153913,"Melanoma","PD-(L)1",0.274067492367326
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Gide__Melanoma__PD-(L)1",-0.268,0.333,38,0.420808777239779,"Melanoma","PD-(L)1",0.617186206618342
+"8","R vs NR","T_cells_follicular_helper","ICB_Gide__Melanoma__PD-(L)1",-0.305,0.336,38,0.364764990475656,"Melanoma","PD-(L)1",0.595220765360478
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Gide__Melanoma__PD-(L)1",0.2,0.343,38,0.560088156149832,"Melanoma","PD-(L)1",0.724819966782135
+"10","R vs NR","T_cells_gamma_delta","ICB_Gide__Melanoma__PD-(L)1",-0.156,0.327,38,0.633668139331051,"Melanoma","PD-(L)1",0.733721003435954
+"11","R vs NR","NK_cells_resting","ICB_Gide__Melanoma__PD-(L)1",0.95,0.511,38,0.0631266310354011,"Melanoma","PD-(L)1",0.274067492367326
+"12","R vs NR","NK_cells_activated","ICB_Gide__Melanoma__PD-(L)1",-0.858,0.421,38,0.0415444867615476,"Melanoma","PD-(L)1",0.274067492367326
+"13","R vs NR","Monocytes","ICB_Gide__Melanoma__PD-(L)1",0.619,0.395,38,0.117424866900095,"Melanoma","PD-(L)1",0.287038563533567
+"14","R vs NR","Macrophages_M0","ICB_Gide__Melanoma__PD-(L)1",0.189,0.364,38,0.604103579648287,"Melanoma","PD-(L)1",0.733721003435954
+"15","R vs NR","Macrophages_M1","ICB_Gide__Melanoma__PD-(L)1",-1.999,0.786,38,0.0109894905924998,"Melanoma","PD-(L)1",0.167625976185723
+"16","R vs NR","Macrophages_M2","ICB_Gide__Melanoma__PD-(L)1",1.051,0.433,38,0.015238725107793,"Melanoma","PD-(L)1",0.167625976185723
+"17","R vs NR","Dendritic_cells_resting","ICB_Gide__Melanoma__PD-(L)1",0.33,0.357,38,0.355562632263038,"Melanoma","PD-(L)1",0.595220765360478
+"18","R vs NR","Dendritic_cells_activated","ICB_Gide__Melanoma__PD-(L)1",-1.718,1.017,38,0.0911862933465945,"Melanoma","PD-(L)1",0.274067492367326
+"19","R vs NR","Mast_cells_resting","ICB_Gide__Melanoma__PD-(L)1",1.55,0.931,38,0.0959162874508737,"Melanoma","PD-(L)1",0.274067492367326
+"20","R vs NR","Mast_cells_activated","ICB_Gide__Melanoma__PD-(L)1",-0.091,0.323,38,0.777814074924529,"Melanoma","PD-(L)1",0.845266928595707
+"21","R vs NR","Eosinophils","ICB_Gide__Melanoma__PD-(L)1",0.337,0.383,38,0.37877685068394,"Melanoma","PD-(L)1",0.595220765360478
+"22","R vs NR","Neutrophils","ICB_Gide__Melanoma__PD-(L)1",0.03,0.318,38,0.923605016644627,"Melanoma","PD-(L)1",0.923605016644627

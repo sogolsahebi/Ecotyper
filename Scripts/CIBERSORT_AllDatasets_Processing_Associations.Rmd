@@ -1,0 +1,594 @@
+---
+title: "CIBERSORT_AllDatasets_Processing_Associations"
+author: "Nasim Bondar Sahebi"
+date: "2024-12-17"
+output:
+  html_document: default
+  pdf_document: default
+subtitle: '[EcoTyper_Project, Deconvolution Porcess](https://github.com/sogolsahebi/EcoTyper_Project)'
+params:
+  show_code: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+### Goal of the CIBERSORT Deconvolution for IO Datasets
+
+This script analyzes immune cell composition using the **CIBERSORT** method and its association with IO treatment outcomes in the Jung dataset (OS, PFS, and Response: R vs NR).
+
+#### Purpose
+1. **Analyze Immune Cell Composition**: Assess immune cell signatures using **CIBERSORT**.
+2. **Evaluate Associations with Treatment Outcomes**: Explore correlations between immune features and clinical outcomes:
+   - **Overall Survival (OS)**
+   - **Progression-Free Survival (PFS)**
+   - **Response (R vs NR)**
+3. **Insights into Immunotherapy**: Identify TME components influencing therapy response, aiding in the discovery of biomarkers for personalized treatment strategies.
+
+#### Scope  
+This script specifically performs deconvolution, immune profiling, and association analysis **for the Jung dataset** as part of the **EcoTyper** and **PredictIO** projects.
+
+#### Data Source  
+- The **Jung dataset** is an immunotherapy cohort analyzed in the **BHK Lab**.  
+- Processed and curated datasets are available on [GitHub](https://github.com/bhklab/ClinSets/tree/main/data).  
+
+## **Load libraries**
+
+```{r libraries}
+library(SummarizedExperiment)
+library(MultiAssayExperiment)
+library(immunedeconv)
+library(ComplexHeatmap)
+library(circlize)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(IOBR)
+library(PredictioR)
+library(ggplotify)
+library(ggplot2)
+library(meta)
+```
+
+### Overview of Dataset and Clinical Characteristics
+
+#### Inclusion Criteria for Dataset Analysis:
+
+- **Treatments**: Patients treated with **PD-1/PD-L1**, **IO+combo**, or **CTLA4** were included.
+- **Cell Lines**: Datasets with at least 25 patients were considered, prioritizing non-solid tumors and excluding solid tumors like **Lymph_node**.
+- **Sample Types**: Only **PRE** treatment samples were included to assess baseline characteristics before therapy.
+- **RNA-seq Data**: Only patients with **RNA-seq** data were included; **microarray** data was excluded.
+- **Normalization**: RNA-seq data was normalized using `log2(TPM + 0.001)` to ensure consistent expression levels.
+
+---
+
+### Set up environment and load data
+Set the base directory for the project and load the processed `combined_clin` dataset, which includes exclusions like unwanted treatments or non-RNA-seq data.
+
+
+
+```{r setup2}
+# Set base directory
+Base_dir <- "~/BHK lab/EcoTyper_Project/Scripts/"
+
+input_dir <- file.path(Base_dir, "data_all")
+output_dir <- file.path(Base_dir, "outputs", "Cibersort_Alldatasets_outputs")
+
+# Load the combined clinical dataset after exclusions
+combined_clin <- read.csv(file.path(Base_dir, "outputs/Dataprocessing_outputs/", "combined_clin_after_exclusion.csv"))
+
+summary_dataset <- read.csv(file.path(Base_dir, "outputs/Dataprocessing_outputs/", "summary_of_All_IOdataset_maes.csv"))
+
+studies <- sapply(strsplit(unique(combined_clin$study), "_"), function(x) x[2])
+
+```
+
+### Display Cohorts used in analysis
+
+Extracts the unique study cohorts from the Immunotherpy dataset and displays them as a table, making it easy to see which cohorts are included in the analysis.
+
+
+| Dataset         | Cancer Type     | Sample Size | Clinical Endpoints      | Molecular Data                     | PMID                                               |
+|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
+| ICB_Auslander   | Melanoma        | 37          | Response (R vs NR)       | CTLA4, PD-1/PD-L1, IO+combo        | [30127394](https://pubmed.ncbi.nlm.nih.gov/30127394/) |
+| ICB_Cloughesy   | Brain           | 28          | PFS/OS                   | PD-1/PD-L1                         | [30742122](https://pubmed.ncbi.nlm.nih.gov/30742122/) |
+| ICB_Damrauer    | Bladder         | 90          | PFS/OS                   | PD-1/PD-L1                         | [36333289](https://pubmed.ncbi.nlm.nih.gov/36333289/) |
+| ICB_Fehrenbacher| Lung            | 192         | PFS/OS                   | PD-1/PD-L1, chemo                  | [26970723](https://pubmed.ncbi.nlm.nih.gov/26970723/) |
+| ICB_Gide        | Melanoma        | 41          | PFS/OS                   | PD-1/PD-L1                         | [30753825](https://pubmed.ncbi.nlm.nih.gov/30753825/) |
+| ICB_Hugo        | Melanoma        | 27          | OS                       | PD-1/PD-L1                         | [26997480](https://pubmed.ncbi.nlm.nih.gov/26997480/) |
+| ICB_IMmotion150 | Kidney          | 326         | Response (R vs NR)       | Targeted, IO+targeted, PD-1/PD-L1  | [29867230](https://pubmed.ncbi.nlm.nih.gov/29867230/) |
+| ICB_Jerby_Arnon | Melanoma        | 112         | PFS                      | PD-1/PD-L1                         | [30388455](https://pubmed.ncbi.nlm.nih.gov/30388455/) |
+| ICB_Jung        | Lung            | 60          | PFS                      | PD-1/PD-L1                         | [31537801](https://pubmed.ncbi.nlm.nih.gov/31537801/) |
+| ICB_Kim         | Gastric         | 45          | Response (R vs NR)       | PD-1/PD-L1                         | [30013197](https://pubmed.ncbi.nlm.nih.gov/30013197/) |
+| ICB_Limagne1    | Lung            | 70          | Response                 | Anti-PD-1                          | [35051357](https://pubmed.ncbi.nlm.nih.gov/35051357/) |
+| ICB_Limagne2    | Lung            | 26          | Response                 | Anti-PD-1/Anti-PD-L1               | [35051357](https://pubmed.ncbi.nlm.nih.gov/35051357/) |
+| ICB_Liu         | Melanoma        | 144         | PFS/OS                   | Combo, PD-1/PD-L1                  | [31792460](https://pubmed.ncbi.nlm.nih.gov/31792460/) |
+| ICB_Mariathasan | Various         | 348         | OS                       | PD-1/PD-L1                         | [29443960](https://pubmed.ncbi.nlm.nih.gov/29443960/) |
+| ICB_Miao1       | Kidney          | 52          | PFS/OS                   | PD-1/PD-L1                         | [29301960](https://pubmed.ncbi.nlm.nih.gov/29301960/) |
+| ICB_Padron      | Pancreas        | 45          | PFS/OS                   | PD-1/PD-L1                         | [35662283](https://pubmed.ncbi.nlm.nih.gov/35662283/) |
+| ICB_Powles      | Bladder         | 148         | Response (R vs NR)       | PD-1/PD-L1                         | [31686036](https://pubmed.ncbi.nlm.nih.gov/31686036/) |
+| ICB_Puch        | Melanoma        | 55          | Response (R vs NR)       | PD-1/PD-L1                         | [33542239](https://pubmed.ncbi.nlm.nih.gov/33542239/) |
+| ICB_Ravi        | Lung            | 148         | PFS/OS                   | PD-1/PD-L1, IO+chemo, IO+combo     | [37024582](https://pubmed.ncbi.nlm.nih.gov/37024582/) |
+| ICB_Rittmeyer   | Lung            | 699         | PFS/OS                   | PD-1/PD-L1, chemo                  | [27979383](https://pubmed.ncbi.nlm.nih.gov/27979383/) |
+| ICB_Snyder      | Ureteral        | 25          | PFS/OS                   | PD-1/PD-L1                         | [28552987](https://pubmed.ncbi.nlm.nih.gov/28552987/) |
+| ICB_Van_Allen   | Melanoma        | 42          | PFS/OS                   | CTLA4                              | [26359337](https://pubmed.ncbi.nlm.nih.gov/26359337/) |
+| ICB_VanDenEnde  | Esophageal      | 35
+
+### List of Datasets Used in the Analysis (Stratified by Cancer Type and Treatment)
+
+We are using 26 datasets (data stratified by cancer type and treatment) in this analysis. Below is a table summarizing the datasets Below is a table summarizing the datasets:
+
+
+```{r cohorts_display}
+# Display all unique cohorts used in the analysis
+kable(unique(combined_clin$study), caption = "All Cohorts that we are using stratify by cancertype_treatment", col.names = "Cohorts") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
+  scroll_box(height = "400px")
+```
+
+### Display Summary and Clinical Data
+
+This Table provides a summary of immunotherapy outcomes, broken down by cancer type, treatment type, and sex. Key metrics include:
+
+- **Study and Patient Counts**
+- **Age**: Median and interquartile range (IQR), along with NA percentage
+- **Sex Distribution**: Percentage of females, males, and NA values
+- **Cancer Types**: E.g., Melanoma, Lung, Bladder
+- **Treatment Types**: PD-1/PD-L1, IO+combo, CTLA4
+- **Response Rates**: Percentages of responders and non-responders (with NA values)
+- **Survival Metrics**: Progression-Free Survival (PFS) and Overall Survival (OS), including:
+  - PFS: No progression %, Progressed %, Median/IQR
+  - OS: Alive %, Dead %, Median/IQR
+
+```{r data_display}
+# Load and display Summary and Clinical datasets.
+kable(read.csv(file.path(Base_dir, "outputs/Dataprocessing_outputs/", "Summary_of_Data_After_Exclusion.csv")), 
+      caption = "Summary of All Data and Data with Sex") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
+  scroll_box(height = "400px")
+
+
+kable(read.csv(file.path(Base_dir, "outputs/Dataprocessing_outputs/" , "Detailed_clinical_characteristics_of_the_IO_datasets.csv")), 
+      caption = "Detailed Clinical Characteristics of the IO Datasets") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
+  scroll_box(height = "400px")
+```
+
+
+### CIBERSORT Deconvolution on Immunotherapy Datasets
+
+We applied the CIBERSORT deconvolution method across all immunotherapy datasets. Currently, 26 datasets are ready for analysis after applying exclusion criteria. Details of data processing can be found in the [Data Processing R Markdown file](https://github.com/sogolsahebi/EcoTyper_Project/blob/main/Scripts/Data_processing.html).
+
+
+```{r Cibersort for all dataset, fig.height=7, fig.width=11}
+
+# TODO: Note: Exclude "ICB_Prat__Lung__PD-(L)1" and "ICB_Prat__Melanoma__PD-(L)1" as they aremicroarray datasets and have NA in all rows.
+
+# Commment this chunk due to run time 
+process_ICB_dataset <- function(dataset_name) {
+  tryCatch({
+   
+    # Load the .rda file and assign it to a variable based on the dataset name
+    dataset_path <- file.path(input_dir, paste0(dataset_name, ".rda"))
+    loaded_data <- get(load(dataset_path))
+    assign(dataset_name, loaded_data, envir = .GlobalEnv)
+    
+    # Extract expression data and convert back to TPM
+    expr_data <- loaded_data@assays@data@listData[["gene_expression"]]
+    expr_data <- as.matrix(expr_data)
+    expr_TPM <- 2^(expr_data) - 0.001
+    expr_data <- log2(expr_TPM + 1)
+    
+    # Run deconvolution analysis using CIBERSORT
+    cibersort_results <- deconvo_tme(eset = expr_data, method = "cibersort")
+    cibersort_results <- as.data.frame(cibersort_results)
+    rownames(cibersort_results) <- colnames(expr_data)
+    cibersort_results$ID <- NULL
+    colnames(cibersort_results) <- gsub("_CIBERSORT", "", colnames(cibersort_results))
+    
+    # Save CIBERSORT results to CSV
+    dir.create(file.path( output_dir, dataset_name), recursive = TRUE, showWarnings = FALSE)
+    csv_file_path <- file.path(file.path( output_dir, dataset_name), paste0(dataset_name, "_CIBERSORT_Deconvolution_Results.csv"))
+    write.csv(cibersort_results, file = csv_file_path, row.names = TRUE)
+    
+    # Filter out irrelevant columns and scale data
+    filtered_results <- cibersort_results[, -((ncol(cibersort_results) - 2):ncol(cibersort_results))] %>%
+  scale()
+
+    # Extract and reorder clinical data based on response
+    clin_data <- data.frame(colData(loaded_data))
+    
+   # Clean and standardize the response column
+    clin_data$response <- ifelse(
+      clin_data$response %in% c("R", "NR"),  # Keep "R" and "NR" as is
+      clin_data$response,
+      ifelse(is.na(clin_data$response), "Unknown", "Other")  # Replace NA with "Unknown" and others with "Other"
+    )
+    
+    # Create custom color mapping for responses, including "Unknown"
+    response_colors <- c("R" = "darkgreen", "NR" = "darkred", "Unknown" = "gray", "Other" = "orange")
+    
+    # Create heatmap annotations for responses
+    response_annotation <- HeatmapAnnotation(
+      Response = clin_data$response,
+      col = list(Response = response_colors)
+    )
+    
+    #remove NAn
+    filtered_results <- filtered_results[, colSums(is.nan(filtered_results)) == 0]
+    
+    # Reorder data based on response for visualization
+    reorder_index <- order(clin_data$response)  # Order by response
+    filtered_results <- filtered_results[reorder_index, , drop = FALSE]
+    clin_data <- clin_data[reorder_index, , drop = FALSE]
+    
+    h <- Heatmap(
+      t(as.matrix(filtered_results)),  # Transpose to match heatmap format
+      name = paste("CIBERSORT Results for", dataset_name, "(Scaled)"),
+      top_annotation = response_annotation,  # Add annotations
+      cluster_rows = FALSE,  # No clustering for rows
+      column_split = clin_data$response,  # Split by response categories
+      col = colorRamp2(c(min(filtered_results), 0, max(filtered_results)), c("blue", "white", "red"))
+    )
+    h
+    
+    # Save the heatmap as a PNG
+    dir.create(file.path( output_dir, dataset_name), recursive = TRUE, showWarnings = FALSE)
+    draw(h)
+    dev.off()
+     
+    # Return the result file path for reference
+    return(csv_file_path)
+  }, error = function(e) {
+    # Log any dataset that encounters an error
+    message("Error processing dataset: ", dataset_name, " - ", e$message)
+    return(NULL)  # Return NULL to continue to the next dataset
+  })
+}
+
+
+# List of unique datasets
+# IO_dataset <- unique(combined_clin$study)
+
+# # Error tracking list
+# error_datasets <- list()
+# 
+# # Example usage: Apply the process_ICB_dataset function to each dataset in IO_dataset
+# results_paths <- lapply(IO_dataset, function(dataset_name) {
+#   result <- process_ICB_dataset(dataset_name)
+#   if (is.null(result)) error_datasets <<- c(error_datasets, dataset_name)  # Track datasets with errors
+#   return(result)
+# })
+# 
+# # Display datasets with errors, if any
+# if (length(error_datasets) > 0) {
+#   print("The following datasets encountered errors and were skipped:")
+#   print(error_datasets)
+# } else {
+#   print("All datasets processed successfully.")
+# }
+
+```
+
+CIBERSORT takes time for each step, so open results from the previous chunk
+
+```{r Cibersort for all datasets}
+
+dataset_names <- unique(combined_clin$study)[!unique(combined_clin$study) %in% c("ICB_Prat__Lung__PD-(L)1", "ICB_Prat__Melanoma__PD-(L)1")]
+
+# Function to process a dataset and generate a heatmap
+process_dataset <- function(dataset_name) {
+  
+  # Define paths
+  dataset_path <- file.path(input_dir, paste0(dataset_name, ".rda"))
+  deconv_path <- file.path(output_dir, dataset_name)
+  
+  # Load the RDA file
+  loaded_data <- get(load(dataset_path))
+  clin_data <- data.frame(colData(loaded_data))
+  
+  # Read the CIBERSORT results CSV file
+  cibersort_file <- file.path(deconv_path, paste0(dataset_name, "_CIBERSORT_Deconvolution_Results.csv"))
+  cibersort_results <- read.csv(cibersort_file, row.names = 1)
+  
+  # Filter out irrelevant columns and scale data
+  filtered_results <- cibersort_results[, -((ncol(cibersort_results) - 2):ncol(cibersort_results))] %>%
+    scale()
+  
+  filtered_results <- filtered_results[, colSums(is.nan(filtered_results)) == 0]
+  
+  # NOTE: Patient mismatch
+  # These datasets may have mismatches between CIBERSORT results and clinical data:
+  # "ICB_Snyder__Ureteral__PD-(L)1", "ICB_Mariathasan__Ureteral__PD-(L)1", "ICB_Limagne2__Lung__PD-(L)1"
+  
+  # Find common patients between `filtered_results` and `clin_data`
+  # Remove NaN columns again to ensure no invalid columns remain
+  filtered_results <- filtered_results[, colSums(is.nan(filtered_results)) == 0]
+  common_patients <- intersect(rownames(filtered_results), clin_data$patientid)
+  filtered_results <- filtered_results[common_patients, , drop = FALSE]
+  clin_data <- clin_data[clin_data$patientid %in% common_patients, , drop = FALSE]
+
+  # Clean and standardize the response column
+  clin_data$response <- ifelse(
+    clin_data$response %in% c("R", "NR"),  # Keep "R" and "NR" as is
+    clin_data$response,
+    ifelse(is.na(clin_data$response), "Unknown", "Other")  # Replace NA with "Unknown" and others with "Other"
+  )
+  
+  # Reorder data based on response for visualization
+    reorder_index <- order(clin_data$response)  # Order by response
+    filtered_results <- filtered_results[reorder_index, , drop = FALSE]
+    clin_data <- clin_data[reorder_index, , drop = FALSE]
+    
+  # Create custom color mapping for responses
+  response_colors <- c("R" = "darkgreen", "NR" = "darkred", "Unknown" = "gray", "Other" = "orange")
+  
+  # Create heatmap annotations for responses
+  response_annotation <- HeatmapAnnotation(
+    Response = clin_data$response,
+    col = list(Response = response_colors)
+  )
+    
+    h <- Heatmap(
+      t(as.matrix(filtered_results)),  # Transpose to match heatmap format
+      name = paste("CIBERSORT Results for", dataset_name, "(Scaled)"),
+      top_annotation = response_annotation,  # Add annotations
+      cluster_rows = FALSE,  
+      column_split = clin_data$response,  # Split by response categories
+      col = colorRamp2(c(min(filtered_results), 0, max(filtered_results)), c("blue", "white", "red"))
+    )
+    h
+  
+  # Return both the heatmap and filtered CIBERSORT results
+  list(heatmap = h, cibersort_results = filtered_results)
+}
+
+# Example: Process all datasets and store results
+results <- setNames(lapply(dataset_names, process_dataset), dataset_names)
+
+# Save the cibersort reults and heatmaps 
+# save(results, file = file.path(output_dir, Cibersort_results_and_heatmaps.RData"))
+
+# # Example: Accessing results per dataset
+# # Access the heatmap for a specific dataset
+# results[["ICB_Auslander__Melanoma__PD-(L)1"]][["heatmap"]]
+# results[["ICB_Auslander__Melanoma__PD-(L)1"]][["cibersort_results"]]
+
+
+# Example for all datasets
+# Example for all datasets using lapply
+# Display results using knitr::kable
+lapply(dataset_names, function(data) knitr::kable(results[[data]][["cibersort_results"]], caption = paste("CIBERSORT Results of Dataset:", data)))
+
+```
+
+```{r Cibersortheatmaps for all datasets, fig.height=7, fig.width=20}
+# For all datasets
+lapply(dataset_names, function(data) draw(results[[data]][["heatmap"]]))
+
+```
+
+### Evaluate CIBERSORT cell signatures' association with OS, PFS and Response(RvsNR) using PredictIO package
+
+```{r Association with OS/PFS/response}
+
+# Gene Association with Cell Signatures using the PredictIO Package
+
+# Initialize lists to store results for all datasets
+PFS_results <- list()
+OS_results <- list()
+Response_results <- list()
+
+# Loop through each dataset
+for (data in dataset_names) {
+
+  # Extract cancer type and treatment from dataset name
+  cancer_type <- sapply(strsplit(data, "__"), `[`, 2)  
+  treatment <- sapply(strsplit(data, "__"), `[`, 3)  
+  
+  # Load dataset and clinical data
+  ICB_data <- get(load(file.path(Base_dir, "data_all", paste0(data, ".rda"))))
+  clin_data <- data.frame(colData(ICB_data))
+  cibersort_results <- results[[data]][["cibersort_results"]]
+  
+  # Align clinical data and CIBERSORT results by patient identifiers
+  common_patients <- intersect(clin_data$patientid, rownames(cibersort_results))
+  clin_data <- clin_data[match(common_patients, clin_data$patientid), , drop = FALSE]
+  cibersort_results <- cibersort_results[match(common_patients, rownames(cibersort_results)), , drop = FALSE]
+  
+  # Check if alignment is correct
+  if (!all(rownames(cibersort_results) == clin_data$patientid)) {
+    stop(paste("Alignment issue in dataset:", data))
+  }
+
+  # Perform PFS (Progression-Free Survival) analysis
+  if (!all(is.na(clin_data$survival_time_pfs))) {
+    res_pfs <- lapply(1:ncol(cibersort_results), function(k) {
+      sig_name <- colnames(cibersort_results)[k]
+      cellSig_vector <- as.numeric(cibersort_results[, k])
+      
+      tryCatch({
+        geneSigSurvCont(
+          dat.icb = ICB_data,
+          geneSig = cellSig_vector,
+          time.censor = 24,       # 24 months for PFS
+          n.cutoff = 25,          # Minimum sample size
+          study = data,
+          surv.outcome = "PFS",
+          sig.name = sig_name,
+          cancer.type = cancer_type,
+          treatment = treatment
+        )
+      }, error = function(e) {
+        message(sprintf("Error in PFS analysis for %s - %s: %s", data, sig_name, e$message))
+        return(data.frame(sig_name = sig_name, Pval = NA, FDR = NA))
+      })
+    })
+    
+    res_pfs <- do.call(rbind, res_pfs)
+    res_pfs$FDR <- p.adjust(res_pfs$Pval, method = "BH")
+    PFS_results[[data]] <- res_pfs
+    write.csv(
+      res_pfs,
+      file = file.path(output_dir, data, paste0(data, "_PFS_CIBERSORT_CellSig_Association.csv")),
+      row.names = TRUE
+    )
+  }
+
+  # Perform OS (Overall Survival) analysis
+  if (!all(is.na(clin_data$survival_time_os))) {
+    res_os <- lapply(1:ncol(cibersort_results), function(k) {
+      sig_name <- colnames(cibersort_results)[k]
+      cellSig_vector <- as.numeric(cibersort_results[, k])
+      
+      tryCatch({
+        geneSigSurvCont(
+          dat.icb = ICB_data,
+          geneSig = cellSig_vector,
+          time.censor = 36,       # 36 months for OS
+          n.cutoff = 25,          # Minimum sample size
+          study = data,
+          surv.outcome = "OS",
+          sig.name = sig_name,
+          cancer.type = cancer_type,
+          treatment = treatment
+        )
+      }, error = function(e) {
+        message(sprintf("Error in OS analysis for %s - %s: %s", data, sig_name, e$message))
+        return(data.frame(sig_name = sig_name, Pval = NA, FDR = NA))
+      })
+    })
+    
+    res_os <- do.call(rbind, res_os)
+    res_os$FDR <- p.adjust(res_os$Pval, method = "BH")
+    OS_results[[data]] <- res_os
+    write.csv(
+      res_os,
+      file = file.path(output_dir, data, paste0(data, "_OS_CIBERSORT_CellSig_Association.csv")),
+      row.names = TRUE
+    )
+  }
+
+  # Perform Response analysis (R vs NR)
+  if (!all(is.na(clin_data$response))) {
+    res_logreg <- lapply(1:ncol(cibersort_results), function(k) {
+      sig_name <- colnames(cibersort_results)[k]
+      cellSig_vector <- as.numeric(cibersort_results[, k])
+      
+      # Skip signatures where 50% or more of the values are zero
+      if (sum(cellSig_vector == 0) / length(cellSig_vector) >= 0.5) {
+        message(sprintf("Skipping %s due to zeros in at least 50%% of samples", sig_name))
+        return(NULL)  # Skip this signature
+      }
+      
+      if (length(cellSig_vector) != nrow(clin_data)) {
+        stop(sprintf("Length mismatch in logistic regression for %s - %s", data, sig_name))
+      }
+
+      tryCatch({
+        # Run logistic regression to analyze association between cell signature and response
+        geneSigLogReg(
+          dat.icb = ICB_data,
+          geneSig = cellSig_vector,
+          n.cutoff = 25,  # Minimum sample size
+          n0.cutoff = 5, 
+          n1.cutoff = 5, 
+          study = data,
+          sig.name = sig_name,
+          cancer.type = cancer_type,
+          treatment = treatment
+        )
+      }, error = function(e) {
+        message(sprintf("Error in logistic regression for %s - %s: %s", data, sig_name, e$message))
+        return(data.frame(sig_name = sig_name, Pval = NA, FDR = NA, Study = data))
+      })
+    })
+    
+    # Filter out NULL results from skipped signatures
+    res_logreg <- res_logreg[!sapply(res_logreg, is.null)]
+    
+    # If valid results, combine them and calculate FDR
+    if (length(res_logreg) > 0 && all(sapply(res_logreg, function(x) ncol(x) == ncol(res_logreg[[1]])))) {
+      res_logreg <- do.call(rbind, res_logreg)
+      res_logreg$FDR <- p.adjust(res_logreg$Pval, method = "BH")
+      Response_results[[data]] <- res_logreg
+      write.csv(
+        res_logreg,
+        file = file.path(output_dir, data, paste0(data, "_Response_CIBERSORT_CellSig_Association.csv")),
+        row.names = TRUE
+      )
+    } else {
+      message(sprintf("Skipped Response analysis for %s due to inconsistent results.", data))
+    }
+  }
+}
+
+  
+# Final outputs:
+# PFS_results contains PFS analysis for all datasets
+# OS_results contains OS analysis for all datasets
+# Response_results contains Response (R vs NR) analysis for all datasets
+# At the end, PFS_results, OS_results, and Response_results will contain data for all datasets
+
+# Save results
+# save(PFS_results, file = file.path(output_dir, "All_Association_PFS_Cibersort.RData"))
+# save(OS_results, file = file.path(output_dir, "All_Association_OS_Cibersort.RData"))
+# save(Response_results, file = file.path(output_dir, "All_Association_Response_RvsNR_Cibersort.RData"))
+
+
+########################### warninig ##################################### 
+# lack of number  response outcome:( cit off 5)
+# - ICB_Auslander__Melanoma__PD-(L)1
+# - ICB_Padron__Pancreas__PD-(L)1
+# - ICB_Cloughesy__Brain__PD-(L)1
+
+
+# TODO:
+# subscript out of bounds
+# - ICB_IMmotion150__Kidney__PD-(L)1 - NK_cells_activated: subscript out of bounds
+# - ICB_Limagne2__Lung__PD-(L)1 - T_cells_regulatory_.Tregs.: subscript out of bounds
+# - Efor ICB_Limagne2__Lung__PD-(L)1 - Dendritic_cells_resting: subscript out of bounds
+
+##########################################################################
+
+#example of displayong the resposne 
+PFS_example <- PFS_results[["ICB_Van_Allen__Melanoma__CTLA4"]]
+OS_example <- OS_results[["ICB_Van_Allen__Melanoma__CTLA4"]]
+Response_example <- Response_results[["ICB_Van_Allen__Melanoma__CTLA4"]]
+
+# Display the kable table
+# Display PFS Results
+kable(PFS_example, 
+      format = "html", 
+      caption = "PFS Results: ICB Van Allen, Melanoma, CTLA4") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+# Display OS Results
+kable(OS_example, 
+      format = "html", 
+      caption = "OS Results: ICB Van Allen, Melanoma, CTLA4") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+# Display Response Results
+kable(Response_example, 
+      format = "html", 
+      caption = "Response Results: ICB Van Allen, Melanoma, CTLA4") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+# Remove problematic datasets
+Response_results <- Response_results[!names(Response_results) %in% c(
+  "ICB_IMmotion150__Kidney__PD-(L)1", 
+  "ICB_Limagne2__Lung__PD-(L)1", 
+  "ICB_Mariathasan__Ureteral__PD-(L)1"
+)]
+
+```
+
+

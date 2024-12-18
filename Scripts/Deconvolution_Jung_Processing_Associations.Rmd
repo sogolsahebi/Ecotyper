@@ -1,0 +1,623 @@
+---
+title: "Deconvolution_Jung_Processing_Associations"
+author: "Nasim Bondar Sahebi"
+date: "2024-12-17"
+output:
+  html_document: default
+  pdf_document: default
+subtitle: '[EcoTyper_Project, Deconvolution Porcess](https://github.com/sogolsahebi/EcoTyper_Project/scripts)'
+params:
+  show_code: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+#### **Goal of the Deconvolution Process for Jung Dataset** 
+
+The **Deconvolution_Jung_Processing_Associations.Rmd** script focuses on analyzing immune cell composition and its association with IO treatment outcomes in the Jung dataset.  
+
+---
+
+##### **Purpose**  
+1. **Identify Immune Cells in Tumors**:  
+   Using deconvolution methods such as **CIBERSORT** and **xCell**, this script profiles the immune landscape of tumor samples, identifying and quantifying immune cell types to better understand the tumor microenvironment (TME).  
+
+2. **Analyze Associations with Treatment Outcomes**:  
+   The script evaluates immune cell signatures in relation to clinical outcomes, specifically:  
+   - **Overall Survival (OS)**  
+   - **Progression-Free Survival (PFS)**  
+   - **Response (Responders vs Non-Responders, R vs NR)**  
+
+   This helps identify immune features associated with therapy outcomes.  
+   
+3. **Insights into Immunotherapy**:
+The results provide insights into the cellular components of the TME that influence therapeutic response, potentially identifying biomarkers for personalized treatment strategies.
+
+
+##### **Scope**  
+This script specifically performs deconvolution, immune profiling, and association analysis **for the Jung dataset** as part of the EcoTyper and PredictIO projects.  
+
+##### **Data Source**  
+- The Jung dataset is an immunotherapy cohort analyzed in the **BHK Lab**.  
+- Processed and curated datasets are available on [GitHub](https://github.com/bhklab/ClinSets/tree/main/data).  
+
+
+#### **load libraries**
+
+
+```{r libraries}
+library(SummarizedExperiment)
+library(MultiAssayExperiment)
+library(immunedeconv)
+library(ComplexHeatmap)
+library(circlize)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(IOBR)
+library(PredictioR)
+library(ggplotify)
+library(ggplot2)
+library(meta)
+```
+
+### **1. Environment Setup and Data Loading**
+
+The **Jung dataset** (`ICB_Jung__Lung__PD-(L)1.rda`) is a [SummarizedExperiment object](https://bioconductor.org/packages/devel/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html) containing both **RNA-seq expression data** and **clinical data**. It consists of **60 lung cancer patients** treated with **PD-1/PD-L1 therapy**. Clinical outcomes include **Progression-Free Survival (PFS)** and **Response** (Responders vs Non-Responders, R vs NR). More details can be found in [PMID: 31537801](https://pubmed.ncbi.nlm.nih.gov/31537801/).
+
+The RNA-seq expression values are originally in **log2(TPM + 0.001)** format and are converted to **log2(TPM + 1)** for consistency in downstream analyses.
+
+```{r setup and load }
+
+# Environment Setup
+Base_dir <- "C:/Users/azita/OneDrive/Documents/BHK lab/EcoTyper_Project"
+
+input_dir <- file.path(Base_dir, "data_all")
+output_dir <- file.path(Base_dir, "outputs", "Deconvolution_Jung_outputs")
+
+ICB_jung <- get(load(file.path(input_dir, "ICB_Jung__Lung__PD-(L)1.rda")))
+clin_jung <- as.data.frame(colData(ICB_jung))  # Clinical data
+expr_Jung <- log2((2^(ICB_jung@assays@data$gene_expression) - 0.001) + 1)  # Rna-seq: Convert to log2(TPM + 1)
+                  
+# Display first two rows of clinical data
+kable(head(clin_jung), caption = "First Two Rows of Clinical Data")
+kable(head(expr_Jung, 2), caption = "First Two Rows of Gene Expression Data")
+
+DT::datatable(clin_jung)
+DT::datatable(expr_Jung[1:8, 1:4])
+```
+
+### **2. Generate a Table of IOBR Deconvolution Methods**
+
+The goal of starting with this table is to create a comprehensive overview of the deconvolution methods available in the [IOBR package](https://github.com/IOBR/IOBR). This table will provide clarity on the following aspects/columns:
+
+1. **Method**: List the available deconvolution methods.
+2. **Accepted Expression and Normalization**: Specify accepted expression types (e.g., counts, RNA-seq, TPM, etc.).
+3. **PubMed ID**: Include the PubMed ID or DOI link for each method.
+4. **Type of Cell**: Indicate the type of cells targeted by each method (e.g., CIBERSORT --> Immune cells).
+5. **Number of Cells**: Provide the number of cell types for each method.
+
+```{r IBOR Deconvulation methods}
+
+methods_table <- data.frame(
+  Method = c(
+    "[CIBERSORT](https://cibersort.stanford.edu/)",
+    "[EPIC](https://gfellerlab.shinyapps.io/EPIC_1-1/)",
+    "[MCPcounter](https://github.com/ebecht/MCPcounter/blob/master/Source/License)",
+    "[xCell](https://github.com/dviraran/xCell/blob/master/DESCRIPTION)",
+    "[ESTIMATE](https://bioinformatics.mdanderson.org/public-software/estimate/)",
+    "[TIMER](http://cistrome.org/TIMER/download.html)",
+    "[quanTIseq](http://icbi.at/software/quantiseq/doc/index.html)",
+    "[IPS](https://github.com/icbi-lab/Immunophenogram/blob/master/LICENSE)"
+  ),
+  Accepted_Expression_Normalization = c(
+    "Counts, RNA-seq, TPM, FPKM",
+    "RNA-seq, TPM, FPKM",
+    "RNA-seq, TPM, FPKM",
+    "RNA-seq, TPM, FPKM, Counts",
+    "RNA-seq, FPKM",
+    "RNA-seq, TPM",
+    "RNA-seq, TPM",
+    "RNA-seq, TPM"
+  ),
+  PubMed_ID = c(
+    "[PMID: 25977888](https://doi.org/10.1038/nmeth.3337)",
+    "[PMID: 28783075](https://doi.org/10.7554/eLife.26476)",
+    "[PMID: 27798624](https://doi.org/10.1186/s13059-016-1070-5)",
+    "[PMID: 29141660](https://doi.org/10.1186/s13059-017-1349-1)",
+    "[PMID: 24113773](https://doi.org/10.1038/ncomms3612)",
+    "[PMID: 27423106](https://doi.org/10.1186/s13059-016-1028-7)",
+    "[PMID: 30992056](https://doi.org/10.1186/s13073-019-0638-6)",
+    "[PMID: 28052254](https://doi.org/10.1016/j.celrep.2016.12.019)"
+  ),
+  Cell_Type = c(
+    "Immune cells",
+    "Cancer cells, Immune cells",
+    "Immune cells, Stromal cells",
+    "Immune cells, Stromal cells",
+    "Tumor purity, Stromal and Immune cells",
+    "Immune cells",
+    "Tumor immune cells",
+    "Immune phenotypes"
+  ),
+  Number_of_Cells = c(
+    "22 immune cell types",
+    "Multiple (B cells, T cells, Macrophages)",
+    "10 cell types",
+    "64 cell types",
+    "Not specified",
+    "6 immune cell types",
+    "10 immune cell types",
+    "28 immune cell types"
+  ),
+  License = c(
+    "free for non-commercial use only",
+    "free for non-commercial use only (Academic License)",
+    "free [(GPL 3.0)](https://github.com/ebecht/MCPcounter/blob/master/Source/License)",
+    "free [(GPL 3.0)](https://github.com/dviraran/xCell/blob/master/DESCRIPTION)",
+    "free [(GPL 2.0)](https://bioinformatics.mdanderson.org/estimate/)",
+    "free [(GPL 2.0)](http://cistrome.org/TIMER/download.html)",
+    "free [(BSD)](https://github.com/icbi-lab/immunedeconv/blob/master/LICENSE.md)",
+    "free [(BSD)](https://github.com/icbi-lab/Immunophenogram/blob/master/LICENSE)"
+  ),
+  Citation = c(
+    "Newman, A. M., Liu, C. L., Green, M. R., Gentles, A. J., Feng, W., Xu, Y., … Alizadeh, A. A. (2015). Robust enumeration of cell subsets from tissue expression profiles. Nature Methods, 12(5), 453–457. [https://doi.org/10.1038/nmeth.3337](https://doi.org/10.1038/nmeth.3337)",
+    "Racle, J., de Jonge, K., Baumgaertner, P., Speiser, D. E., & Gfeller, D. (2017). Simultaneous enumeration of cancer and immune cell types from bulk tumor gene expression data. ELife, 6, e26476. [https://doi.org/10.7554/eLife.26476](https://doi.org/10.7554/eLife.26476)",
+    "Becht, E., Giraldo, N. A., Lacroix, L., Buttard, B., Elarouci, N., Petitprez, F., … de Reyniès, A. (2016). Estimating the population abundance of tissue-infiltrating immune and stromal cell populations using gene expression. Genome Biology, 17(1), 218. [https://doi.org/10.1186/s13059-016-1070-5](https://doi.org/10.1186/s13059-016-1070-5)",
+    "Aran, D., Hu, Z., & Butte, A. J. (2017). xCell: digitally portraying the tissue cellular heterogeneity landscape. Genome Biology, 18(1), 220. [https://doi.org/10.1186/s13059-017-1349-1](https://doi.org/10.1186/s13059-017-1349-1)",
+    "Vegesna R, Kim H, Torres-Garcia W, …, Verhaak R. (2013). Inferring tumour purity and stromal and immune cell admixture from expression data. Nature Communications 4, 2612. [http://doi.org/10.1038/ncomms3612](http://doi.org/10.1038/ncomms3612)",
+    "Li, B., Severson, E., Pignon, J.-C., Zhao, H., Li, T., Novak, J., … Liu, X. S. (2016). Comprehensive analyses of tumor immunity: implications for cancer immunotherapy. Genome Biology, 17(1), 174. [https://doi.org/10.1186/s13059-016-1028-7](https://doi.org/10.1186/s13059-016-1028-7)",
+    "Finotello, F., Mayer, C., Plattner, C., Laschober, G., Rieder, D., Hackl, H., …, Sopper, S. (2019). Molecular and pharmacological modulators of the tumor immune contexture revealed by deconvolution of RNA-seq data. Genome medicine, 11(1), 34. [https://doi.org/10.1186/s13073-019-0638-6](https://doi.org/10.1186/s13073-019-0638-6)",
+    "Charoentong, P., et al. (2017). Pan-cancer Immunogenomic Analyses Reveal Genotype-Immunophenotype Relationships and Predictors of Response to Checkpoint Blockade. Cell Reports 18, 248-262. [https://doi.org/10.1016/j.celrep.2016.12.019](https://doi.org/10.1016/j.celrep.2016.12.019)"
+  )
+)
+
+# Generate the table using kable
+kable(methods_table, format = "markdown", align = "l", caption = "Deconvolution Methods in IOBR Package with License and Citation Links")
+
+# Save table
+#write.csv(methods_table, file = file.path(output_dir, "deconvolution_method_table.csv"), row.names = TRUE)
+
+
+```
+
+### **Summary of Deconvolution Methods and Algorithms**
+
+This table provides an overview of the different deconvolution methods, including their processes for computing scores, the algorithms they use, and whether machine learning (ML) is involved in estimating cell proportions across samples.
+
+```{r}
+
+# DF summarizing the deconvolution methods
+methods_summary <- data.frame(
+  Method = c(
+    "CIBERSORT", 
+    "EPIC", 
+    "MCPcounter", 
+    "xCell", 
+    "ESTIMATE", 
+    "TIMER", 
+    "quanTIseq", 
+    "IPS"
+  ),
+  Computation_Process = c(
+    "Uses support vector regression (SVR) to estimate the relative fraction of cell types in bulk tissue samples based on gene expression signatures.",
+    "Estimates immune and cancer cell fractions using gene expression data combined with reference profiles.",
+    "Counts different cell types using marker genes expressed in immune and stromal cells.",
+    "Uses signatures derived from RNA-seq data to calculate cell type scores based on relative enrichment.",
+    "Calculates tumor purity, immune, and stromal cell infiltration scores from gene expression data.",
+    "Uses gene expression signatures to estimate the abundance of tumor-infiltrating immune cells.",
+    "Uses reference profiles and RNA-seq data to estimate immune cell fractions in tumor samples.",
+    "Immunophenogram-based method that scores immune cell activity using gene expression data."
+  ),
+  Algorithm = c(
+    "Support Vector Regression (SVR)", 
+    "Non-negative least squares (NNLS)", 
+    "Marker-based counting", 
+    "Single sample gene set enrichment analysis (ssGSEA)", 
+    "Single sample gene set enrichment analysis (ssGSEA)", 
+    "Gene expression signatures", 
+    "Linear regression", 
+    "Non-linear scoring using immune-related genes"
+  ),
+  ML_Algorithm = c(
+    "Yes",  # SVR is an ML algorithm
+    "No",   # EPIC does not use ML in its core process
+    "No",   # MCPcounter does not use ML
+    "No",   # xCell does not use ML, relies on enrichment scores
+    "No",   # ESTIMATE does not use ML, based on enrichment scores
+    "No",   # TIMER uses gene signatures, no ML involved
+    "No",   # quanTIseq uses linear regression, no ML involved
+    "Yes"   # IPS uses non-linear scoring which may involve ML
+  )
+)
+
+
+kable(methods_summary, format = "html", caption = "Summary of Deconvolution Methods and Algorithms") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# save as CSV
+# write.csv(methods_summary, file = file.path(output_dir, "deconvolution_methods_summary.csv"), row.names = TRUE)
+```
+
+
+### **CIBERSORT Deconvolution on Jung Lung PD-1/PD-L1** 
+
+We applied **CIBERSORT** to estimate immune and stromal cell abundances in the tumor microenvironment (TME) of lung cancer patients treated with PD-1/PD-L1 therapy. Differences in cell composition between **responders (R)** and **non-responders (NR)** were visualized using a heatmap.
+
+#### Key Insights
+- **Immune Cells**:  
+  - Higher levels of **CD8+ T cells** and **Macrophages M0/M1** were observed in **responders (R)**, indicating a potential link to treatment efficacy.  
+- **Stromal Cells**:  
+  - **Fibroblasts** were more abundant in **non-responders (NR)**, suggesting an association with treatment resistance.  
+
+#### Why It Matters  
+- **Identify Key Cell Types**: CIBERSORT estimates immune (e.g., **T cells**, **macrophages**) and stromal (e.g., **fibroblasts**) cell proportions using gene expression data.  
+- **Therapy Response**: Differences in cell abundance between responders and non-responders provide insights into the role of specific cell types in therapy outcomes.  
+- **Personalized Treatment**: Understanding TME composition can guide immunotherapy strategies by targeting cells critical to treatment response or resistance.  
+
+#### Heatmap Insights  
+- **Macrophages**: Elevated in **responders**, emphasizing their role in therapy success.  
+- **T Cells**: Enrichment of **CD8+ T cells** and **CD4+ memory T cells** in responders highlights their importance in driving immune responses.  
+
+Specific immune subsets, such as **CD8+ T cells** and **Macrophages M0/M1**, appear enriched in responders, underscoring their role in successful **PD-1/PD-L1 therapy**.  
+
+For more information on the method: [CIBERSORT Documentation](https://cibersortx.stanford.edu/).
+
+```{r IBOR Deconvolution jung, fig.height=7, fig.width=11}
+
+# cibersort_results <- read.csv(file.path(Base_dir, "outputs/Deconvolution_outputs", "ICB_Jung__Lung__PD-(L)1", "ICB_Jung__Lung__PD-(L)1_CIBERSORT_Deconvolution_Results.csv"), row.names = 1)
+
+# Run CIBERSORT
+cibersort_results <- as.data.frame(deconvo_tme(eset = expr_Jung, method = "cibersort"))
+rownames(cibersort_results) <- colnames(expr_Jung)
+cibersort_results$ID <- NULL
+colnames(cibersort_results) <- gsub("_CIBERSORT", "", colnames(cibersort_results))
+
+# Display CIBERSORT results in a table
+kable(cibersort_results, format = "html", caption = "CIBERSORT Deconvolution Results") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>% 
+  scroll_box(height = "400px")
+
+# Save the CIBERSORT results as a CSV file
+# write.csv(cibersort_results, file = file.path(output_dir, "ICB_Jung_CIBERSORT_Deconvolution_Results.csv"), row.names = TRUE)
+
+# remove last three columns , `P-value`, -`Correlation`, -`RMSE`
+filtered_cibersort_results <- cibersort_results[, -((ncol(cibersort_results) - 2):ncol(cibersort_results))]
+filtered_cibersort_results <- scale(filtered_cibersort_results)
+
+# Reorder data based on response
+reorder_index <- order(clin_jung$response)
+filtered_cibersort_results <- filtered_cibersort_results[reorder_index, ]
+clin_jung <- clin_jung[reorder_index, ]
+
+# Custom colors for response annotation (Responser vs Non-responder)
+response_colors <- c("R" = "darkgreen", "NR" = "darkred")
+
+# Create the custom annotation with color mapping
+response_annotation <- HeatmapAnnotation(
+  Response = clin_jung$response,
+  col = list(Response = response_colors)  # Map colors to response categories
+)
+
+# Create a heatmap with the filtered results and custom response annotation
+h <- Heatmap(t(as.matrix(filtered_cibersort_results)), 
+             name = "CIBERSORT Results (Scaled)", 
+             top_annotation = response_annotation, 
+             cluster_rows = F, 
+             column_split = clin_jung$response, col = colorRamp2(c(min(filtered_cibersort_results), 0, max(filtered_cibersort_results)), c("blue", "white", "red")))
+
+
+h
+
+```
+
+**Next**: Run deconvolution with  
+- **EPIC**  
+- **xCell**  
+- **TIMER**  
+- **quanTIseq**
+
+---
+
+### **EPIC Deconvolution on Jung Lung PD-1/PD-L1**
+
+We applied **EPIC** to estimate immune and stromal cell abundances in the tumor microenvironment (TME) of lung cancer patients treated with PD-1/PD-L1 therapy. Heatmaps were generated to compare cell type distributions between **responders (R)** and **non-responders (NR)**.  
+
+#### Key Findings
+- **Immune Cells**:  
+  - Higher levels of **Macrophages M0/M1** and **CD8+ T cells** in **responders**, suggesting their role in mediating treatment efficacy.  
+- **Stromal Cells**:  
+  - Elevated **fibroblast (CAF)** levels in **non-responders**, indicating a potential link to therapy resistance.  
+
+#### Heatmap Insights
+- **Macrophages**: Enriched in **responders**, reinforcing their role in immune-mediated responses.  
+- **T Cells**: Increased **CD8+ T cells** and **CD4+ memory T cells** in responders highlight their importance in driving anti-tumor responses.  
+- **Fibroblasts**: Higher abundance in **non-responders**, possibly contributing to immune evasion or therapy resistance.  
+
+**EPIC** provides actionable insights into how immune and stromal cell types shape TME composition and influence response to **PD-1/PD-L1 therapy**, paving the way for personalized therapeutic strategies.  
+
+**EPIC GitHub**: [EPIC GitHub](https://github.com/GfellerLab/EPIC)  
+
+```{r IBOR other Deconvolution  for Jung , fig.height=4, fig.width= 11}
+# Function For all Remaining Deconv methods
+create_heatmaps <- function(data, name) {
+  
+  # Reorder data based on response
+  reorder_index <- order(clin_jung$response)
+  data <- data[reorder_index, ]
+  clin_jung <- clin_jung[reorder_index, ]
+
+  # Scaled version
+  data_scaled <- as.data.frame(scale(data))
+  
+  # Custom colors for response annotation (Responser vs Non-responder)
+  response_colors <- c("R" = "darkgreen", "NR" = "darkred")
+  
+  # Create the custom annotation with color mapping
+  response_annotation <- HeatmapAnnotation(
+    Response = clin_jung$response,
+    col = list(Response = response_colors)  # Map colors to response categories
+  )
+  
+  h_scaled <- Heatmap(t(as.matrix(data_scaled)), name = paste(name, "(Scaled)"), 
+                      top_annotation = response_annotation, 
+                      cluster_rows = FALSE, column_split = clin_jung$response, 
+                      col = colorRamp2(c(min(data_scaled), 0, max(data_scaled)), c("blue", "white", "red")))
+
+  # Display scaled heatmap
+  draw(h_scaled)}
+
+# Example usage for EPIC
+
+#2.EPIC
+# Run deconvolution analysis and generate heatmap for EPIC
+epic_results <- as.data.frame(deconvo_tme(eset = expr_Jung, method = "epic"))
+rownames(epic_results) <- epic_results$ID
+epic_results$ID <- NULL
+
+# write.csv(epic_results, file = file.path(output_dir, "ICB_Jung_EPIC_Deconvolution_Results.csv"), row.names = TRUE)
+
+kable(epic_results, format = "html", caption = "EPIC Deconvolution Results") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>% scroll_box(height = "400px")
+
+create_heatmaps(epic_results, "EPIC Results")
+       
+```
+### **MCPcounter Deconvolution on Jung Lung PD-1/PD-L1**
+
+We applied **MCPcounter** to estimate immune and stromal cell abundances in the tumor microenvironment (TME) of lung cancer patients treated with PD-1/PD-L1 therapy. Heatmaps were generated to compare the relative cell type proportions between **responders (R)** and **non-responders (NR)**.  
+
+#### Key Findings  
+- **Immune Cells**:  
+  - Higher levels of **CD8+ T cells** and **cytotoxic lymphocytes** in **responders (R)**, suggesting their critical role in driving treatment success.  
+  - **Monocytes** and **myeloid dendritic cells** are elevated in some responders, indicating their potential contribution to enhanced immune responses.  
+- **Stromal Cells**:  
+  - **Fibroblasts** are more abundant in **non-responders (NR)**, which may reflect a suppressive role in the TME.  
+  - **Neutrophils** show varied patterns between responders and non-responders.  
+
+#### Why It Matters  
+- **Cell-Type Associations**: MCPcounter identifies immune (e.g., **CD8+ T cells**, **monocytes**) and stromal (e.g., **fibroblasts**) cell subsets that may influence therapy response.  
+- **Response Patterns**: Enrichment of immune cells like **CD8+ T cells** in responders highlights their importance, while increased **fibroblasts** in non-responders may indicate therapy resistance.  
+- **Personalized Therapy**: These findings can inform the development of biomarker-driven strategies to predict response and optimize immunotherapy outcomes.  
+
+#### Heatmap Insights  
+- **CD8+ T Cells and Cytotoxic Lymphocytes**: Enriched in responders, reinforcing their role in successful PD-1/PD-L1 therapy.  
+- **Fibroblasts**: Elevated in non-responders, suggesting a potential barrier to effective immune responses.  
+
+By providing a detailed view of immune and stromal cell distributions, **MCPcounter** highlights key TME components associated with therapeutic efficacy, guiding personalized treatment strategies.  
+
+**MCPcounter GitHub**: [MCPcounter GitHub](https://github.com/ebecht/MCPcounter)  
+
+```{r MCPcounter , fig.height=6, fig.width= 10}
+
+#3.MCPcounter
+
+# Run deconvolution analysis and generate heatmap for MCPcounter
+mcpcounter_results <- as.data.frame(deconvo_tme(eset = expr_Jung, method = "mcpcounter"))
+rownames(mcpcounter_results) <- colnames(expr_Jung)
+mcpcounter_results$ID <- NULL
+kable(mcpcounter_results, format = "html", caption = "MCPcounter Deconvolution Results") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>%scroll_box(height = "400px")
+
+# write.csv(mcpcounter_results, file = file.path(output_dir, "ICB_Jung_MCPcounter_Deconvolution_Results.csv"), row.names = TRUE)
+
+create_heatmaps(mcpcounter_results, "MCPcounter Results")
+
+```
+
+### **xCell Deconvolution on Jung Lung PD-1/PD-L1**
+
+We performed **xCell** deconvolution analysis on the **Jung Lung PD-1/PD-L1** dataset to estimate the relative abundance of immune and stromal cell types within the tumor microenvironment (TME) based on gene expression data.
+
+#### Key Findings  
+- **Immune Cells**:  
+  - Higher levels of **CD8+ T cells** and **macrophages** (M1/M2) in **responders (R)**, indicating their role in promoting effective immune responses.  
+  - Variations in **NK cells** and **CD4+ memory T cells** also show significant patterns between responders and non-responders.  
+- **Stromal Cells**:  
+  - **Fibroblasts** and **endothelial cells** exhibit varying abundance, with higher fibroblast levels potentially associated with resistance in non-responders.  
+
+#### Why It Matters 
+- **Cell-Type Identification**: **xCell** provides high-resolution estimates of immune cells (e.g., **CD8+ T cells**, **macrophages**) and stromal cells (e.g., **fibroblasts**, **endothelial cells**), helping understand their distribution in the TME.  
+- **Response Patterns**: Differences in cell type abundance between **responders (R)** and **non-responders (NR)** reveal immune and stromal components associated with therapeutic efficacy.  
+- **Personalized Therapy**: Insights from **xCell** can inform personalized immunotherapy strategies by identifying critical immune and stromal cells linked to therapy response.  
+
+#### Heatmap Insights 
+- **T Cells**: **CD8+ T cells** are more abundant in **responders**, suggesting their role in enhancing therapeutic response.  
+- **Macrophages**: Elevated macrophage levels in some **responders** imply their involvement in anti-tumor immunity.  
+- **Fibroblasts**: Higher fibroblast abundance in **non-responders** could indicate a suppressive or resistance-associated role.  
+- **Neutrophils and NK Cells**: Variations in these cells suggest their contribution to TME dynamics and therapy response.  
+
+**xCell** provides valuable insights into how immune and stromal cell types influence PD-1/PD-L1 therapy outcomes and could help identify biomarkers for treatment efficacy.
+
+**xCell GitHub**: [xCell GitHub](https://github.com/Teichlab/xCell)
+
+```{r xCell call , fig.height=15, fig.width= 11, include=FALSE}
+
+#4.xCell
+# Run deconvolution analysis and generate heatmap for xCell
+xcell_results <- as.data.frame(deconvo_tme(eset = expr_Jung, method = "xcell"))
+```
+
+```{r xCell , fig.height=15, fig.width= 11}
+# xcell_results <- as.data.frame(deconvo_tme(eset = expr_Jung, method = "xcell"))
+rownames(xcell_results) <- colnames(expr_Jung)
+xcell_results$ID <- NULL
+kable(xcell_results, format = "html", caption = "xCell Deconvolution Results") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>%scroll_box(height = "400px")
+
+# write.csv(xcell_results, file = file.path(output_dir, "ICB_Jung_xCell_Deconvolution_Result.csv"), row.names = TRUE)
+create_heatmaps(xcell_results, "xCell Results")
+```
+
+### **TIMER Deconvolution on **Jung Lung PD-1/PD-L1**
+
+We performed **TIMER** deconvolution analysis on the **Jung Lung PD-1/PD-L1** dataset to estimate the relative abundance of immune cell types within the tumor microenvironment (TME) of patients treated with PD-1/PD-L1 therapy. **TIMER** is a robust tool that characterizes immune infiltration based on gene expression data.
+
+#### Key Findings 
+- **Immune Cells**:  
+  - Higher levels of **CD8+ T cells** in **responders (R)**, suggesting a strong immune response against tumors.  
+  - **Macrophages** and **Neutrophils** are more abundant in **non-responders (NR)**, possibly indicating an immune-suppressive environment.  
+- **Response Patterns**:  
+  - **CD8+ T cells** are enriched in **responders**, while **Macrophages** and **Neutrophils** are more prominent in **non-responders**, hinting at immune modulation differences between the two groups.  
+
+#### Why It Matters  
+- **Immune Cell Identification**: **TIMER** quantifies several key immune populations (e.g., **CD8+ T cells**, **macrophages**, **Tregs**, **neutrophils**, **dendritic cells**) to reveal TME composition.  
+- **Response Patterns**: The differences in immune cell distribution suggest that **CD8+ T cells** are critical in mediating positive outcomes, while **macrophages** and **neutrophils** might contribute to resistance.  
+- **Personalized Therapy**: By understanding these immune cell dynamics, **TIMER** helps inform personalized treatment strategies to target specific immune populations and enhance the efficacy of PD-1/PD-L1 therapies.  
+
+#### Heatmap Insights 
+- **CD8+ T Cells**: Higher levels in **responders (R)** suggest their role in therapeutic response.  
+- **Macrophages and Neutrophils**: Elevated in **non-responders (NR)**, indicating a potential immune-suppressive or resistance role.  
+
+By uncovering immune cell distributions in the TME, **TIMER** analysis provides valuable insights for improving immunotherapy outcomes through targeted approaches.
+
+**TIMER GitHub**: [TIMER GitHub](https://cistrome.shinyapps.io/timer/)
+   
+```{r Timer ,fig.height=4, fig.width=12}
+
+# Timer method
+
+timer_results <- deconvo_timer(expr_Jung, project = NULL, indications = rep("luad",dim(expr_Jung)[2])) 
+rownames(timer_results) <- timer_results$ID
+timer_results$ID <- NULL
+
+ # write.csv(timer_results , file = file.path(output_dir, "ICB_jung_TIMER_Deconvolution_Results.csv"), row.names = TRUE)
+
+kable(timer_results, format = "html", caption = "Timer Deconvolution Results") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+create_heatmaps(timer_results, "Timer Results")
+```
+
+### **CIBERSORT Cell Signature Associations with Immunotherapy Outcomes (PFS and Response (R vs NR))**
+
+After performing the **CIBERSORT** deconvolution analysis and identifying the tumor microenvironment (TME) cell signatures, we will now explore the associations between these cell signatures and immune-oncology (IO) outcomes, such as **Progression-Free Survival (PFS)**, **Overall Survival (OS)**, and **Response** (R vs NR). This analysis will help us identify which cell types and their corresponding signatures are linked to treatment efficacy.
+
+To conduct this analysis, we will utilize the **PredictIO** package developed by the BHK Lab, which is designed to evaluate the relationship between cell signatures and clinical outcomes. 
+
+We will begin with **PFS** for this dataset, as it does not include **OS** data.
+
+```{r Gene assosiation  for Jung,fig.height=4, fig.width=12}
+
+# Gene Association with Cell Signatures using the PredictIO Package
+
+# Install and load PredictioR package
+# devtools::install_github("bhklab/PredictioR")
+
+# Load dataset (ICB Jung Lung PD-L1)
+ICB_jung <- get(load(file.path(Base_dir, "data_all", "ICB_Jung__Lung__PD-(L)1.rda")))
+
+# Set study parameters
+geneSig.score <- cibersort_results
+study_id <- "ICB_jung" 
+cancer_type <- "Lung"
+treatment <- "PD-1/PD-L1"
+
+# Run PFS association analysis for each CIBERSORT cell signature
+cibersort_signatures <- cibersort_results[, 1:22] # remove columns "P-value", "Correlation" and "RSMSE" 
+
+res.all <- lapply(1:ncol(cibersort_signatures), function(k) {
+    sig_name <- colnames(cibersort_signatures)[k]
+    cellSig_vector <- as.numeric(cibersort_signatures[, k])  # Extract column as numeric vector
+    
+    # Perform survival analysis using geneSigSurvCont
+    res <- tryCatch({
+        geneSigSurvCont(
+            dat.icb = ICB_jung,
+            geneSig = cellSig_vector,
+            time.censor = 24,       # Use 24 months for PFS (os is 36)
+            n.cutoff = 25,          # Minimum sample size
+            study = study_id,       # Study identifier
+            surv.outcome = "PFS",   # PFS outcome
+            sig.name = sig_name,    # Signature name
+            cancer.type = cancer_type,
+            treatment = treatment
+        )
+    }, error = function(e) {
+        # Handle errors gracefully
+        message(sprintf("Error in survival analysis for %s: %s", sig_name, e$message))
+        return(data.frame(sig_name = sig_name, Pval = NA, FDR = NA))
+    })
+    
+    return(res)
+})
+
+# Combine results, adjust p-values, and order by FDR
+res.all <- do.call(rbind, res.all)
+res.all$FDR <- p.adjust(res.all$Pval, method = "BH")
+res.all <- res.all[order(res.all$FDR), ]
+
+# write.csv(res.all , file = file.path(output_dir, "ICB_jung_PFS_CIBERSORT_CellSig_Association.csv"), row.names = TRUE)
+
+# Display results in HTML format
+kable(res.all, format = "html", caption = "Association of CIBERSORT Cell Signatures with PFS in ICB Jung Dataset") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>%
+  scroll_box(height = "400px")
+
+```
+
+### **Cibersort Cell Signature Associations with Immunotherapy Response (R vs NR)**
+
+Perform logistic regression analysis to associate cell signatures with immunotherapy response (Responder vs Non-Responder) in the ICB Jung dataset.
+
+```{r Gene association with Response for Jung datasets, fig.height=4, fig.width=12}
+
+# Perform logistic regression for each cell signature in CIBERSORT
+res.logreg <- lapply(1:ncol(cibersort_signatures), function(k) {
+    sig_name <- colnames(cibersort_signatures)[k]
+    cellSig_vector <- as.numeric(cibersort_signatures[, k])
+    
+    # Run the logistic regression with adjusted cutoffs
+    res <- geneSigLogReg(
+        dat.icb = ICB_jung,
+        geneSig = cellSig_vector,
+        n.cutoff = 25, 
+        study = study_id,
+        sig.name = sig_name,
+        n0.cutoff = 5,   # Minimum responders  
+        n1.cutoff = 5,   # Minimum non-responders
+        cancer.type = cancer_type,
+        treatment = treatment
+    )
+    
+    return(res)
+})
+
+# Combine all results into a single data frame
+res.logreg <- do.call(rbind, res.logreg)
+
+# Adjust p-values and order results by FDR
+res.logreg$FDR <- p.adjust(res.logreg$Pval, method = "BH")
+res.logreg <- res.logreg[order(res.logreg$FDR), ]
+
+# Save results as a CSV file
+# write.csv(res.logreg , file = file.path(output_dir, "ICB_jung_Response_CIBERSORT_CellSig_Association.csv"), row.names = TRUE)
+
+# Display results in HTML format
+kable(res.logreg, format = "html", caption = "Association of CIBERSORT Cell Signatures with Response (R vs NR) in ICB Jung Dataset") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>%
+  scroll_box(height = "400px")
+
+```

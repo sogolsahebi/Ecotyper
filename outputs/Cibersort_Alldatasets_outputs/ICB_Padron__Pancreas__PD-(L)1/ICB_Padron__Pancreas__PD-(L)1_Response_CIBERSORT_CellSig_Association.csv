@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"2","R vs NR","B_cells_memory","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"3","R vs NR","Plasma_cells","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"4","R vs NR","T_cells_CD8","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"5","R vs NR","T_cells_CD4_naive","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"8","R vs NR","T_cells_follicular_helper","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"10","R vs NR","T_cells_gamma_delta","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"11","R vs NR","NK_cells_resting","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"12","R vs NR","NK_cells_activated","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"13","R vs NR","Monocytes","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"14","R vs NR","Macrophages_M0","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"15","R vs NR","Macrophages_M1","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"16","R vs NR","Macrophages_M2","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"17","R vs NR","Dendritic_cells_resting","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"18","R vs NR","Dendritic_cells_activated","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"19","R vs NR","Mast_cells_resting","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"20","R vs NR","Mast_cells_activated","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"21","R vs NR","Eosinophils","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA
+"22","R vs NR","Neutrophils","ICB_Padron__Pancreas__PD-(L)1",NA,NA,NA,NA,NA,NA,NA

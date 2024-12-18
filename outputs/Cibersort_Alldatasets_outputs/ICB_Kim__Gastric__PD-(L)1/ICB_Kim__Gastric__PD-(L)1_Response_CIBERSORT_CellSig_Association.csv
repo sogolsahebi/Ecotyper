@@ -1,0 +1,23 @@
+"","Outcome","Gene","Study","Coef","SE","N","Pval","Cancer_type","Treatment","FDR"
+"1","R vs NR","B_cells_naive","ICB_Kim__Gastric__PD-(L)1",0.094,0.355,31,0.79032699401154,"Gastric","PD-(L)1",0.876892777400048
+"2","R vs NR","B_cells_memory","ICB_Kim__Gastric__PD-(L)1",1.251,1.493,31,0.402099622097482,"Gastric","PD-(L)1",0.58974611240964
+"3","R vs NR","Plasma_cells","ICB_Kim__Gastric__PD-(L)1",0.275,0.41,31,0.502598992500821,"Gastric","PD-(L)1",0.691073614688629
+"4","R vs NR","T_cells_CD8","ICB_Kim__Gastric__PD-(L)1",-0.951,0.455,31,0.0364576481013475,"Gastric","PD-(L)1",0.30126874991675
+"5","R vs NR","T_cells_CD4_naive","ICB_Kim__Gastric__PD-(L)1",-0.979,2.776,31,0.724215063512678,"Gastric","PD-(L)1",0.876892777400048
+"6","R vs NR","T_cells_CD4_memory_resting","ICB_Kim__Gastric__PD-(L)1",0.712,0.409,31,0.0814746987866367,"Gastric","PD-(L)1",0.358488674661201
+"7","R vs NR","T_cells_CD4_memory_activated","ICB_Kim__Gastric__PD-(L)1",-1.072,0.596,31,0.072205025844253,"Gastric","PD-(L)1",0.358488674661201
+"8","R vs NR","T_cells_follicular_helper","ICB_Kim__Gastric__PD-(L)1",-0.865,0.414,31,0.036922163392284,"Gastric","PD-(L)1",0.30126874991675
+"9","R vs NR","T_cells_regulatory_.Tregs.","ICB_Kim__Gastric__PD-(L)1",0.546,0.519,31,0.293000807702942,"Gastric","PD-(L)1",0.512554811833269
+"10","R vs NR","T_cells_gamma_delta","ICB_Kim__Gastric__PD-(L)1",-1.291,1.12,31,0.248995927702495,"Gastric","PD-(L)1",0.512554811833269
+"11","R vs NR","NK_cells_resting","ICB_Kim__Gastric__PD-(L)1",0.467,0.442,31,0.290064721129725,"Gastric","PD-(L)1",0.512554811833269
+"12","R vs NR","NK_cells_activated","ICB_Kim__Gastric__PD-(L)1",-0.612,0.395,31,0.121245090378288,"Gastric","PD-(L)1",0.444565331387056
+"13","R vs NR","Monocytes","ICB_Kim__Gastric__PD-(L)1",0.398,0.378,31,0.291330714314864,"Gastric","PD-(L)1",0.512554811833269
+"14","R vs NR","Macrophages_M0","ICB_Kim__Gastric__PD-(L)1",0.436,0.38,31,0.250709978266921,"Gastric","PD-(L)1",0.512554811833269
+"15","R vs NR","Macrophages_M1","ICB_Kim__Gastric__PD-(L)1",-1.132,0.554,31,0.0410821022613751,"Gastric","PD-(L)1",0.30126874991675
+"16","R vs NR","Macrophages_M2","ICB_Kim__Gastric__PD-(L)1",-0.073,0.412,31,0.858865714016221,"Gastric","PD-(L)1",0.876892777400048
+"17","R vs NR","Dendritic_cells_resting","ICB_Kim__Gastric__PD-(L)1",-0.708,0.487,31,0.145751011446598,"Gastric","PD-(L)1",0.458074607403593
+"18","R vs NR","Dendritic_cells_activated","ICB_Kim__Gastric__PD-(L)1",0.081,0.346,31,0.816126347789335,"Gastric","PD-(L)1",0.876892777400048
+"19","R vs NR","Mast_cells_resting","ICB_Kim__Gastric__PD-(L)1",-0.055,0.354,31,0.876892777400048,"Gastric","PD-(L)1",0.876892777400048
+"20","R vs NR","Mast_cells_activated","ICB_Kim__Gastric__PD-(L)1",0.457,0.443,31,0.302873297901477,"Gastric","PD-(L)1",0.512554811833269
+"21","R vs NR","Eosinophils","ICB_Kim__Gastric__PD-(L)1",-0.199,0.322,31,0.537350022037272,"Gastric","PD-(L)1",0.695394146165881
+"22","R vs NR","Neutrophils","ICB_Kim__Gastric__PD-(L)1",0.375,0.398,31,0.345896639365854,"Gastric","PD-(L)1",0.543551861860627
