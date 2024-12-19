@@ -13,7 +13,7 @@
 
 <meta name="date" content="2024-12-17" />
 
-<title>Deconvolution_Jung_Processing_Associations.Rmd</title>
+<title>Deconvolution_Jung_Processing_Associations</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -3074,7 +3074,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Deconvolution_Jung_Processing_Associations.Rmd</h1>
+<h1 class="title toc-ignore">Deconvolution_Jung_Processing_Associations</h1>
 <h3 class="subtitle"><a href="https://github.com/sogolsahebi/EcoTyper_Project/scripts">EcoTyper_Project,
 Deconvolution Porcess</a></h3>
 <h4 class="author">Nasim Bondar Sahebi</h4>
@@ -3164,11 +3164,11 @@ Non-Responders, R vs NR). More details can be found in <a href="https://pubmed.n
 0.001)</strong> format and are converted to <strong>log2(TPM +
 1)</strong> for consistency in downstream analyses.</p>
 <pre class="r"><code># Environment Setup
-Base_dir &lt;- &quot;C:/Users/azita/OneDrive/Documents/BHK lab/EcoTyper_Project&quot;
+
+Base_dir &lt;- &quot;~/BHK lab/Ecotyper_Project/&quot;
 
 input_dir &lt;- file.path(Base_dir, &quot;data_all&quot;)
 output_dir &lt;- file.path(Base_dir, &quot;outputs&quot;, &quot;Deconvolution_Jung_outputs&quot;)
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 ICB_jung &lt;- get(load(file.path(input_dir, &quot;ICB_Jung__Lung__PD-(L)1.rda&quot;)))
 clin_jung &lt;- as.data.frame(colData(ICB_jung))  # Clinical data
@@ -3616,11 +3616,11 @@ kable(head(clin_jung), caption = &quot;First Two Rows of Clinical Data&quot;)</c
 </tbody>
 </table>
 <pre class="r"><code>DT::datatable(clin_jung)</code></pre>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-daa6333ee059022bc219" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-daa6333ee059022bc219">{"x":{"filter":"none","vertical":false,"data":[["P_990","P_947","P_825","P_573","P_378","P_1873","P_1809","P_1708","P_1619","P_1554","P_1528","P_1510","P_1508","P_1425","P_1412","P_1401","P_1358","P_1352","P_1327","P_1203","P_1164","P_1155","P_1145","P_1104","P_1079","P_1066","P_1017"],["P_990","P_947","P_825","P_573","P_378","P_1873","P_1809","P_1708","P_1619","P_1554","P_1528","P_1510","P_1508","P_1425","P_1412","P_1401","P_1358","P_1352","P_1327","P_1203","P_1164","P_1155","P_1145","P_1104","P_1079","P_1066","P_1017"],["M","M","F","M","F","M","M","M","M","M","M","M","M","M","M","F","M","M","M","M","M","M","M","M","F","F","M"],[68,81,57,64,54,66,68,69,73,56,68,51,56,61,59,65,65,44,59,66,62,61,60,73,62,70,38],["Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung"],["","","","","","","","","","","","","","","","","","","","","","","","","","",""],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["NR","R","NR","NR","R","NR","NR","R","NR","NR","R","R","NR","NR","NR","NR","R","R","R","NR","NR","NR","NR","NR","NR","NR","NR"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["NR","R","NR","NR","R","NR","NR","R","NR","NR","R","R","NR","NR","NR","NR","R","R","R","NR","NR","NR","NR","NR","NR","NR","NR"],["PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1"],["wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes"],["tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm"],[3.166666667,20.6,1.433333333,1.5,13.73333333,1.233333333,1.466666667,5.6,2.733333333,1.233333333,9.300000000000001,10.8,2.166666667,1.966666667,0.1,0.933333333,8.566666667,8.333333333000001,6.833333333,0.833333333,0.366666667,1.133333333,2.433333333,0.966666667,5.8,0.766666667,1.266666667],[1,0,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month"],["PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS"],[43,401,194,366,117,388,156,266,13,38,146,273,18,260,202,42,328,1391,441,137,175,273,178,1100,101,42,82],[4,42,18,39,9,37,20,27,2,3,10,24,4,23,19,5,28,154,42,20,17,24,15,76,13,3,7],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.86,8.02,3.88,7.32,2.34,7.76,3.12,5.32,0.26,0.76,2.92,5.46,0.36,5.2,4.04,0.84,6.56,27.82,8.82,2.74,3.5,5.46,3.56,22,2.02,0.84,1.64],[0.08,0.84,0.36,0.78,0.18,0.74,0.4,0.54,0.04,0.06,0.2,0.48,0.08,0.46,0.38,0.1,0.5600000000000001,3.08,0.84,0.4,0.34,0.48,0.3,1.52,0.26,0.06,0.14],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[43,401,194,366,117,388,156,266,13,38,146,273,18,260,202,42,328,1391,441,137,175,273,178,1100,101,42,82],[0.325908608,0.387089023,0.251712972,0.410597593,0.414296576,0.307758327,0.324772186,0.450911862,0.455254226,0.400425652,0.364790201,0.377090295,0.415487136,0.303500801,0.264443355,0.436672231,0.377759517,0.22054474,0.42678156,0.35971363,0.293888515,0.335438797,0.421131362,0.293149031,0.392672276,0.395929718,0.417538488],[285011126.5,58799436.69,784194239.2,114018200.9,102187138.2,486476347.6,400743320.7,2076055.089,7041421.973,5947504.686,374128096.1,465391056.4,7542228.411,346192818.8,545902993.4,17494258.78,649708156.1,553574113.5,99766614.31999999,437223965.6,520968472.1,443235770.9,5860926.472,895819215,128159753.6,48979857.76,286678444.4]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>patientid<\/th>\n      <th>sex<\/th>\n      <th>age<\/th>\n      <th>cancer_type<\/th>\n      <th>histo<\/th>\n      <th>tissueid<\/th>\n      <th>treatmentid<\/th>\n      <th>stage<\/th>\n      <th>response.other.info<\/th>\n      <th>recist<\/th>\n      <th>response<\/th>\n      <th>treatment<\/th>\n      <th>dna<\/th>\n      <th>rna<\/th>\n      <th>survival_time_pfs<\/th>\n      <th>event_occurred_pfs<\/th>\n      <th>survival_time_os<\/th>\n      <th>event_occurred_os<\/th>\n      <th>survival_unit<\/th>\n      <th>survival_type<\/th>\n      <th>TMB_raw<\/th>\n      <th>nsTMB_raw<\/th>\n      <th>indel_TMB_raw<\/th>\n      <th>indel_nsTMB_raw<\/th>\n      <th>TMB_perMb<\/th>\n      <th>nsTMB_perMb<\/th>\n      <th>indel_TMB_perMb<\/th>\n      <th>indel_nsTMB_perMb<\/th>\n      <th>CIN<\/th>\n      <th>CNA_tot<\/th>\n      <th>AMP<\/th>\n      <th>DEL<\/th>\n      <th>Mutation.burden<\/th>\n      <th>Global.methylation.level<\/th>\n      <th>Aneuploidy.level<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,15,16,21,22,23,24,25,26,27,28,33,34,35]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"patientid","targets":1},{"name":"sex","targets":2},{"name":"age","targets":3},{"name":"cancer_type","targets":4},{"name":"histo","targets":5},{"name":"tissueid","targets":6},{"name":"treatmentid","targets":7},{"name":"stage","targets":8},{"name":"response.other.info","targets":9},{"name":"recist","targets":10},{"name":"response","targets":11},{"name":"treatment","targets":12},{"name":"dna","targets":13},{"name":"rna","targets":14},{"name":"survival_time_pfs","targets":15},{"name":"event_occurred_pfs","targets":16},{"name":"survival_time_os","targets":17},{"name":"event_occurred_os","targets":18},{"name":"survival_unit","targets":19},{"name":"survival_type","targets":20},{"name":"TMB_raw","targets":21},{"name":"nsTMB_raw","targets":22},{"name":"indel_TMB_raw","targets":23},{"name":"indel_nsTMB_raw","targets":24},{"name":"TMB_perMb","targets":25},{"name":"nsTMB_perMb","targets":26},{"name":"indel_TMB_perMb","targets":27},{"name":"indel_nsTMB_perMb","targets":28},{"name":"CIN","targets":29},{"name":"CNA_tot","targets":30},{"name":"AMP","targets":31},{"name":"DEL","targets":32},{"name":"Mutation.burden","targets":33},{"name":"Global.methylation.level","targets":34},{"name":"Aneuploidy.level","targets":35}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-e2e76df456ce3a46e545" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e2e76df456ce3a46e545">{"x":{"filter":"none","vertical":false,"data":[["P_990","P_947","P_825","P_573","P_378","P_1873","P_1809","P_1708","P_1619","P_1554","P_1528","P_1510","P_1508","P_1425","P_1412","P_1401","P_1358","P_1352","P_1327","P_1203","P_1164","P_1155","P_1145","P_1104","P_1079","P_1066","P_1017"],["P_990","P_947","P_825","P_573","P_378","P_1873","P_1809","P_1708","P_1619","P_1554","P_1528","P_1510","P_1508","P_1425","P_1412","P_1401","P_1358","P_1352","P_1327","P_1203","P_1164","P_1155","P_1145","P_1104","P_1079","P_1066","P_1017"],["M","M","F","M","F","M","M","M","M","M","M","M","M","M","M","F","M","M","M","M","M","M","M","M","F","F","M"],[68,81,57,64,54,66,68,69,73,56,68,51,56,61,59,65,65,44,59,66,62,61,60,73,62,70,38],["Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung","Lung"],["","","","","","","","","","","","","","","","","","","","","","","","","","",""],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["NR","R","NR","NR","R","NR","NR","R","NR","NR","R","R","NR","NR","NR","NR","R","R","R","NR","NR","NR","NR","NR","NR","NR","NR"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["NR","R","NR","NR","R","NR","NR","R","NR","NR","R","R","NR","NR","NR","NR","R","R","R","NR","NR","NR","NR","NR","NR","NR","NR"],["PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1","PD-1/PD-L1"],["wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes","wes"],["tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm","tpm"],[3.166666667,20.6,1.433333333,1.5,13.73333333,1.233333333,1.466666667,5.6,2.733333333,1.233333333,9.300000000000001,10.8,2.166666667,1.966666667,0.1,0.933333333,8.566666667,8.333333333000001,6.833333333,0.833333333,0.366666667,1.133333333,2.433333333,0.966666667,5.8,0.766666667,1.266666667],[1,0,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month","month"],["PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS","PFS"],[43,401,194,366,117,388,156,266,13,38,146,273,18,260,202,42,328,1391,441,137,175,273,178,1100,101,42,82],[4,42,18,39,9,37,20,27,2,3,10,24,4,23,19,5,28,154,42,20,17,24,15,76,13,3,7],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.86,8.02,3.88,7.32,2.34,7.76,3.12,5.32,0.26,0.76,2.92,5.46,0.36,5.2,4.04,0.84,6.56,27.82,8.82,2.74,3.5,5.46,3.56,22,2.02,0.84,1.64],[0.08,0.84,0.36,0.78,0.18,0.74,0.4,0.54,0.04,0.06,0.2,0.48,0.08,0.46,0.38,0.1,0.5600000000000001,3.08,0.84,0.4,0.34,0.48,0.3,1.52,0.26,0.06,0.14],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[43,401,194,366,117,388,156,266,13,38,146,273,18,260,202,42,328,1391,441,137,175,273,178,1100,101,42,82],[0.325908608,0.387089023,0.251712972,0.410597593,0.414296576,0.307758327,0.324772186,0.450911862,0.455254226,0.400425652,0.364790201,0.377090295,0.415487136,0.303500801,0.264443355,0.436672231,0.377759517,0.22054474,0.42678156,0.35971363,0.293888515,0.335438797,0.421131362,0.293149031,0.392672276,0.395929718,0.417538488],[285011126.5,58799436.69,784194239.2,114018200.9,102187138.2,486476347.6,400743320.7,2076055.089,7041421.973,5947504.686,374128096.1,465391056.4,7542228.411,346192818.8,545902993.4,17494258.78,649708156.1,553574113.5,99766614.31999999,437223965.6,520968472.1,443235770.9,5860926.472,895819215,128159753.6,48979857.76,286678444.4]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>patientid<\/th>\n      <th>sex<\/th>\n      <th>age<\/th>\n      <th>cancer_type<\/th>\n      <th>histo<\/th>\n      <th>tissueid<\/th>\n      <th>treatmentid<\/th>\n      <th>stage<\/th>\n      <th>response.other.info<\/th>\n      <th>recist<\/th>\n      <th>response<\/th>\n      <th>treatment<\/th>\n      <th>dna<\/th>\n      <th>rna<\/th>\n      <th>survival_time_pfs<\/th>\n      <th>event_occurred_pfs<\/th>\n      <th>survival_time_os<\/th>\n      <th>event_occurred_os<\/th>\n      <th>survival_unit<\/th>\n      <th>survival_type<\/th>\n      <th>TMB_raw<\/th>\n      <th>nsTMB_raw<\/th>\n      <th>indel_TMB_raw<\/th>\n      <th>indel_nsTMB_raw<\/th>\n      <th>TMB_perMb<\/th>\n      <th>nsTMB_perMb<\/th>\n      <th>indel_TMB_perMb<\/th>\n      <th>indel_nsTMB_perMb<\/th>\n      <th>CIN<\/th>\n      <th>CNA_tot<\/th>\n      <th>AMP<\/th>\n      <th>DEL<\/th>\n      <th>Mutation.burden<\/th>\n      <th>Global.methylation.level<\/th>\n      <th>Aneuploidy.level<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,15,16,21,22,23,24,25,26,27,28,33,34,35]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"patientid","targets":1},{"name":"sex","targets":2},{"name":"age","targets":3},{"name":"cancer_type","targets":4},{"name":"histo","targets":5},{"name":"tissueid","targets":6},{"name":"treatmentid","targets":7},{"name":"stage","targets":8},{"name":"response.other.info","targets":9},{"name":"recist","targets":10},{"name":"response","targets":11},{"name":"treatment","targets":12},{"name":"dna","targets":13},{"name":"rna","targets":14},{"name":"survival_time_pfs","targets":15},{"name":"event_occurred_pfs","targets":16},{"name":"survival_time_os","targets":17},{"name":"event_occurred_os","targets":18},{"name":"survival_unit","targets":19},{"name":"survival_type","targets":20},{"name":"TMB_raw","targets":21},{"name":"nsTMB_raw","targets":22},{"name":"indel_TMB_raw","targets":23},{"name":"indel_nsTMB_raw","targets":24},{"name":"TMB_perMb","targets":25},{"name":"nsTMB_perMb","targets":26},{"name":"indel_TMB_perMb","targets":27},{"name":"indel_nsTMB_perMb","targets":28},{"name":"CIN","targets":29},{"name":"CNA_tot","targets":30},{"name":"AMP","targets":31},{"name":"DEL","targets":32},{"name":"Mutation.burden","targets":33},{"name":"Global.methylation.level","targets":34},{"name":"Aneuploidy.level","targets":35}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>DT::datatable(expr_Jung[1:8, 1:4])</code></pre>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-3085ec3ba45fc8e671e8" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-3085ec3ba45fc8e671e8">{"x":{"filter":"none","vertical":false,"data":[["TSPAN6","TNMD","DPM1","SCYL3","C1orf112","FGR","CFH","FUCA2"],[1.495099490799152,0,7.807776240754287,2.848296556185712,4.487714571877537,1.301170531621379,5.904373589015703,3.17384064626644],[3.790515419371274,0.1209852401319562,5.971333014362967,2.06572480840916,3.313796457834284,2.11819748180918,7.005059361560477,3.369737596825472],[6.007617483865809,0.03450244002593861,6.141617273599548,3.358656971220509,3.344503235154867,1.25235688425017,2.367861619639716,5.646055587488529],[2.756301951478251,0,5.33631540717399,1.720596821436366,2.702809574173158,4.119302053729568,5.600548794073084,2.3743353745755]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>P_990<\/th>\n      <th>P_947<\/th>\n      <th>P_825<\/th>\n      <th>P_573<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"P_990","targets":1},{"name":"P_947","targets":2},{"name":"P_825","targets":3},{"name":"P_573","targets":4}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-f84faf2f93899691992b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f84faf2f93899691992b">{"x":{"filter":"none","vertical":false,"data":[["TSPAN6","TNMD","DPM1","SCYL3","C1orf112","FGR","CFH","FUCA2"],[1.495099490799152,0,7.807776240754287,2.848296556185712,4.487714571877537,1.301170531621379,5.904373589015703,3.17384064626644],[3.790515419371274,0.1209852401319562,5.971333014362967,2.06572480840916,3.313796457834284,2.11819748180918,7.005059361560477,3.369737596825472],[6.007617483865809,0.03450244002593861,6.141617273599548,3.358656971220509,3.344503235154867,1.25235688425017,2.367861619639716,5.646055587488529],[2.756301951478251,0,5.33631540717399,1.720596821436366,2.702809574173158,4.119302053729568,5.600548794073084,2.3743353745755]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>P_990<\/th>\n      <th>P_947<\/th>\n      <th>P_825<\/th>\n      <th>P_573<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"P_990","targets":1},{"name":"P_947","targets":2},{"name":"P_825","targets":3},{"name":"P_573","targets":4}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="generate-a-table-of-iobr-deconvolution-methods" class="section level3">
 <h3><strong>2. Generate a Table of IOBR Deconvolution
@@ -4277,7 +4277,7 @@ P_990
 0.0000000
 </td>
 <td style="text-align:right;">
-0.548
+0.535
 </td>
 <td style="text-align:right;">
 0.0249010
@@ -4357,7 +4357,7 @@ P_947
 0.0000000
 </td>
 <td style="text-align:right;">
-0.005
+0.003
 </td>
 <td style="text-align:right;">
 0.3136419
@@ -4437,7 +4437,7 @@ P_825
 0.0402463
 </td>
 <td style="text-align:right;">
-0.943
+0.942
 </td>
 <td style="text-align:right;">
 -0.0283564
@@ -4517,7 +4517,7 @@ P_573
 0.0146267
 </td>
 <td style="text-align:right;">
-0.013
+0.009
 </td>
 <td style="text-align:right;">
 0.2560261
@@ -4597,7 +4597,7 @@ P_378
 0.0788784
 </td>
 <td style="text-align:right;">
-0.005
+0.004
 </td>
 <td style="text-align:right;">
 0.3085283
@@ -4677,7 +4677,7 @@ P_1873
 0.0270884
 </td>
 <td style="text-align:right;">
-0.013
+0.010
 </td>
 <td style="text-align:right;">
 0.2533789
@@ -4837,7 +4837,7 @@ P_1708
 0.1632691
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 <td style="text-align:right;">
 0.3921156
@@ -4917,7 +4917,7 @@ P_1619
 0.0076111
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 <td style="text-align:right;">
 0.4222416
@@ -5397,7 +5397,7 @@ P_1412
 0.0258296
 </td>
 <td style="text-align:right;">
-0.021
+0.022
 </td>
 <td style="text-align:right;">
 0.2037496
@@ -5557,7 +5557,7 @@ P_1358
 0.0000000
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 <td style="text-align:right;">
 0.4302577
@@ -5637,7 +5637,7 @@ P_1352
 0.0224339
 </td>
 <td style="text-align:right;">
-0.058
+0.050
 </td>
 <td style="text-align:right;">
 0.1543662
@@ -5797,7 +5797,7 @@ P_1203
 0.0000000
 </td>
 <td style="text-align:right;">
-0.013
+0.010
 </td>
 <td style="text-align:right;">
 0.2499517
@@ -5877,7 +5877,7 @@ P_1164
 0.3146389
 </td>
 <td style="text-align:right;">
-0.056
+0.050
 </td>
 <td style="text-align:right;">
 0.1557649
@@ -6117,7 +6117,7 @@ P_1104
 0.0127997
 </td>
 <td style="text-align:right;">
-0.024
+0.027
 </td>
 <td style="text-align:right;">
 0.1928873
@@ -6197,7 +6197,7 @@ P_1079
 0.0057065
 </td>
 <td style="text-align:right;">
-0.001
+0.000
 </td>
 <td style="text-align:right;">
 0.4065567
@@ -15904,8 +15904,7 @@ res.logreg &lt;- res.logreg[order(res.logreg$FDR), ]
 
 # Display results in HTML format
 kable(res.logreg, format = &quot;html&quot;, caption = &quot;Association of CIBERSORT Cell Signatures with Response (R vs NR) in ICB Jung Dataset&quot;) %&gt;%
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;), full_width = F) %&gt;%
-  scroll_box(height = &quot;400px&quot;)</code></pre>
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;), full_width = F) %&gt;% scroll_box(height = &quot;400px&quot;)</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; ">
 <table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>

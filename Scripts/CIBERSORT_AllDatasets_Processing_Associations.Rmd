@@ -66,12 +66,9 @@ library(meta)
 ### Set up environment and load data
 Set the base directory for the project and load the processed `combined_clin` dataset, which includes exclusions like unwanted treatments or non-RNA-seq data.
 
-
-
 ```{r setup2}
 # Set base directory
 Base_dir <- "~/BHK lab/Ecotyper_Project/"
-
 input_dir <- file.path(Base_dir, "data_all")
 output_dir <- file.path(Base_dir, "outputs", "Cibersort_Alldatasets_outputs")
 
@@ -81,7 +78,6 @@ combined_clin <- read.csv(file.path(Base_dir, "outputs/Dataprocessing_outputs/",
 summary_dataset <- read.csv(file.path(Base_dir, "outputs/Dataprocessing_outputs/", "summary_of_All_IOdataset_maes.csv"))
 
 studies <- sapply(strsplit(unique(combined_clin$study), "_"), function(x) x[2])
-
 ```
 
 ### Display Cohorts used in analysis
@@ -89,35 +85,36 @@ studies <- sapply(strsplit(unique(combined_clin$study), "_"), function(x) x[2])
 Extracts the unique study cohorts from the Immunotherpy dataset and displays them as a table, making it easy to see which cohorts are included in the analysis.
 
 
-| Dataset         | Cancer Type     | Sample Size | Clinical Endpoints      | Molecular Data                     | PMID                                               |
-|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
-| ICB_Auslander   | Melanoma        | 37          | Response (R vs NR)       | CTLA4, PD-1/PD-L1, IO+combo        | [30127394](https://pubmed.ncbi.nlm.nih.gov/30127394/) |
-| ICB_Cloughesy   | Brain           | 28          | PFS/OS                   | PD-1/PD-L1                         | [30742122](https://pubmed.ncbi.nlm.nih.gov/30742122/) |
-| ICB_Damrauer    | Bladder         | 90          | PFS/OS                   | PD-1/PD-L1                         | [36333289](https://pubmed.ncbi.nlm.nih.gov/36333289/) |
-| ICB_Fehrenbacher| Lung            | 192         | PFS/OS                   | PD-1/PD-L1, chemo                  | [26970723](https://pubmed.ncbi.nlm.nih.gov/26970723/) |
-| ICB_Gide        | Melanoma        | 41          | PFS/OS                   | PD-1/PD-L1                         | [30753825](https://pubmed.ncbi.nlm.nih.gov/30753825/) |
-| ICB_Hugo        | Melanoma        | 27          | OS                       | PD-1/PD-L1                         | [26997480](https://pubmed.ncbi.nlm.nih.gov/26997480/) |
-| ICB_IMmotion150 | Kidney          | 326         | Response (R vs NR)       | Targeted, IO+targeted, PD-1/PD-L1  | [29867230](https://pubmed.ncbi.nlm.nih.gov/29867230/) |
-| ICB_Jerby_Arnon | Melanoma        | 112         | PFS                      | PD-1/PD-L1                         | [30388455](https://pubmed.ncbi.nlm.nih.gov/30388455/) |
-| ICB_Jung        | Lung            | 60          | PFS                      | PD-1/PD-L1                         | [31537801](https://pubmed.ncbi.nlm.nih.gov/31537801/) |
-| ICB_Kim         | Gastric         | 45          | Response (R vs NR)       | PD-1/PD-L1                         | [30013197](https://pubmed.ncbi.nlm.nih.gov/30013197/) |
-| ICB_Limagne1    | Lung            | 70          | Response                 | Anti-PD-1                          | [35051357](https://pubmed.ncbi.nlm.nih.gov/35051357/) |
-| ICB_Limagne2    | Lung            | 26          | Response                 | Anti-PD-1/Anti-PD-L1               | [35051357](https://pubmed.ncbi.nlm.nih.gov/35051357/) |
-| ICB_Liu         | Melanoma        | 144         | PFS/OS                   | Combo, PD-1/PD-L1                  | [31792460](https://pubmed.ncbi.nlm.nih.gov/31792460/) |
-| ICB_Mariathasan | Various         | 348         | OS                       | PD-1/PD-L1                         | [29443960](https://pubmed.ncbi.nlm.nih.gov/29443960/) |
-| ICB_Miao1       | Kidney          | 52          | PFS/OS                   | PD-1/PD-L1                         | [29301960](https://pubmed.ncbi.nlm.nih.gov/29301960/) |
-| ICB_Padron      | Pancreas        | 45          | PFS/OS                   | PD-1/PD-L1                         | [35662283](https://pubmed.ncbi.nlm.nih.gov/35662283/) |
-| ICB_Powles      | Bladder         | 148         | Response (R vs NR)       | PD-1/PD-L1                         | [31686036](https://pubmed.ncbi.nlm.nih.gov/31686036/) |
-| ICB_Puch        | Melanoma        | 55          | Response (R vs NR)       | PD-1/PD-L1                         | [33542239](https://pubmed.ncbi.nlm.nih.gov/33542239/) |
-| ICB_Ravi        | Lung            | 148         | PFS/OS                   | PD-1/PD-L1, IO+chemo, IO+combo     | [37024582](https://pubmed.ncbi.nlm.nih.gov/37024582/) |
-| ICB_Rittmeyer   | Lung            | 699         | PFS/OS                   | PD-1/PD-L1, chemo                  | [27979383](https://pubmed.ncbi.nlm.nih.gov/27979383/) |
-| ICB_Snyder      | Ureteral        | 25          | PFS/OS                   | PD-1/PD-L1                         | [28552987](https://pubmed.ncbi.nlm.nih.gov/28552987/) |
-| ICB_Van_Allen   | Melanoma        | 42          | PFS/OS                   | CTLA4                              | [26359337](https://pubmed.ncbi.nlm.nih.gov/26359337/) |
-| ICB_VanDenEnde  | Esophageal      | 35          | PFS/OS                   | PD-L1                               | [26359337](https://pubmed.ncbi.nlm.nih.gov/33504550/) |
+| **Dataset**      | **Cancer Type** | **Sample Size** | **Clinical Endpoints**   | **Molecular Data**               | **PMID**                                            |
+|-------------------|-----------------|-----------------|---------------------------|------------------|---------------------|
+| ICB_Abacus       | Bladder         | 148             | Response (R vs NR)       | PD-1/PD-L1                       | [31686036](https://pubmed.ncbi.nlm.nih.gov/31686036/) |
+| ICB_Auslander    | Melanoma        | 37              | Response (R vs NR)       | CTLA4, PD-1/PD-L1, IO+combo      | [30127394](https://pubmed.ncbi.nlm.nih.gov/30127394/) |
+| ICB_Cloughesy    | Brain           | 28              | PFS/OS                   | PD-1/PD-L1                       | [30742122](https://pubmed.ncbi.nlm.nih.gov/30742122/) |
+| ICB_Damrauer     | Bladder         | 90              | PFS/OS                   | PD-1/PD-L1                       | [36333289](https://pubmed.ncbi.nlm.nih.gov/36333289/) |
+| ICB_Fehrenbacher | Lung            | 192             | PFS/OS                   | PD-1/PD-L1, chemo                | [26970723](https://pubmed.ncbi.nlm.nih.gov/26970723/) |
+| ICB_Gide         | Melanoma        | 41              | PFS/OS                   | PD-1/PD-L1                       | [30753825](https://pubmed.ncbi.nlm.nih.gov/30753825/) |
+| ICB_Hugo         | Melanoma        | 27              | OS                       | PD-1/PD-L1                       | [26997480](https://pubmed.ncbi.nlm.nih.gov/26997480/) |
+| ICB_IMmotion150  | Kidney          | 326             | Response (R vs NR)       | Targeted, IO+targeted, PD-1/PD-L1| [29867230](https://pubmed.ncbi.nlm.nih.gov/29867230/) |
+| ICB_Jerby_Arnon  | Melanoma        | 112             | PFS                      | PD-1/PD-L1                       | [30388455](https://pubmed.ncbi.nlm.nih.gov/30388455/) |
+| ICB_Jung         | Lung            | 60              | PFS                      | PD-1/PD-L1                       | [31537801](https://pubmed.ncbi.nlm.nih.gov/31537801/) |
+| ICB_Kim          | Gastric         | 45              | Response (R vs NR)       | PD-1/PD-L1                       | [30013197](https://pubmed.ncbi.nlm.nih.gov/30013197/) |
+| ICB_Limagne1     | Lung            | 70              | Response                 | Anti-PD-1                        | [35051357](https://pubmed.ncbi.nlm.nih.gov/35051357/) |
+| ICB_Limagne2     | Lung            | 26              | Response                 | Anti-PD-1/Anti-PD-L1             | [35051357](https://pubmed.ncbi.nlm.nih.gov/35051357/) |
+| ICB_Liu          | Melanoma        | 144             | PFS/OS                   | Combo, PD-1/PD-L1                | [31792460](https://pubmed.ncbi.nlm.nih.gov/31792460/) |
+| ICB_Mariathasan  | Various         | 348             | OS                       | PD-1/PD-L1                       | [29443960](https://pubmed.ncbi.nlm.nih.gov/29443960/) |
+| ICB_Miao1        | Kidney          | 52              | PFS/OS                   | PD-1/PD-L1                       | [29301960](https://pubmed.ncbi.nlm.nih.gov/29301960/) |
+| ICB_Padron       | Pancreas        | 45              | PFS/OS                   | PD-1/PD-L1                       | [35662283](https://pubmed.ncbi.nlm.nih.gov/35662283/) |
+| ICB_Puch         | Melanoma        | 55              | Response (R vs NR)       | PD-1/PD-L1                       | [33542239](https://pubmed.ncbi.nlm.nih.gov/33542239/) |
+| ICB_Ravi         | Lung            | 148             | PFS/OS                   | PD-1/PD-L1, IO+chemo, IO+combo   | [37024582](https://pubmed.ncbi.nlm.nih.gov/37024582/) |
+| ICB_Rittmeyer    | Lung            | 699             | PFS/OS                   | PD-1/PD-L1, chemo                | [27979383](https://pubmed.ncbi.nlm.nih.gov/27979383/) |
+| ICB_Snyder       | Ureteral        | 25              | PFS/OS                   | PD-1/PD-L1                       | [28552987](https://pubmed.ncbi.nlm.nih.gov/28552987/) |
+| ICB_Van_Allen    | Melanoma        | 42              | PFS/OS                   | CTLA4                            | [26359337](https://pubmed.ncbi.nlm.nih.gov/26359337/) |
+| ICB_VanDenEnde   | Esophageal      | 35              | PFS/OS                   | PD-L1                            | [33504550](https://pubmed.ncbi.nlm.nih.gov/33504550/) |
+
 
 ### List of Datasets Used in the Analysis (Stratified by Cancer Type and Treatment)
 
-We are using 26 datasets (data stratified by cancer type and treatment) in this analysis. Below is a table summarizing the datasets Below is a table summarizing the datasets:
+We are using 2 datasets (data stratified by cancer type and treatment) in this analysis. Below is a table summarizing the datasets Below is a table summarizing the datasets:
 
 
 ```{r cohorts_display}
@@ -155,15 +152,11 @@ kable(read.csv(file.path(Base_dir, "outputs/Dataprocessing_outputs/" , "Detailed
   scroll_box(height = "400px")
 ```
 
-
 ### CIBERSORT Deconvolution on Immunotherapy Datasets
 
 We applied the CIBERSORT deconvolution method across all immunotherapy datasets. Currently, 26 datasets are ready for analysis after applying exclusion criteria. Details of data processing can be found in the [Data Processing R Markdown file](https://github.com/sogolsahebi/EcoTyper_Project/blob/main/Scripts/Data_processing.html).
 
-
 ```{r Cibersort for all dataset, fig.height=7, fig.width=11}
-
-# TODO: Note: Exclude "ICB_Prat__Lung__PD-(L)1" and "ICB_Prat__Melanoma__PD-(L)1" as they aremicroarray datasets and have NA in all rows.
 
 # Commment this chunk due to run time 
 process_ICB_dataset <- function(dataset_name) {
@@ -275,7 +268,7 @@ CIBERSORT takes time for each step, so open results from the previous chunk
 
 ```{r Cibersort for all datasets}
 
-dataset_names <- unique(combined_clin$study)[!unique(combined_clin$study) %in% c("ICB_Prat__Lung__PD-(L)1", "ICB_Prat__Melanoma__PD-(L)1")]
+dataset_names <- unique(combined_clin$study)
 
 # Function to process a dataset and generate a heatmap
 process_dataset <- function(dataset_name) {
@@ -538,17 +531,12 @@ for (data in dataset_names) {
 
 
 ########################### warninig ##################################### 
-# lack of number  response outcome:( cit off 5)
-# - ICB_Auslander__Melanoma__PD-(L)1
-# - ICB_Padron__Pancreas__PD-(L)1
-# - ICB_Cloughesy__Brain__PD-(L)1
-
-
 # TODO:
 # subscript out of bounds
 # - ICB_IMmotion150__Kidney__PD-(L)1 - NK_cells_activated: subscript out of bounds
 # - ICB_Limagne2__Lung__PD-(L)1 - T_cells_regulatory_.Tregs.: subscript out of bounds
 # - Efor ICB_Limagne2__Lung__PD-(L)1 - Dendritic_cells_resting: subscript out of bounds
+# - also ICB_Mariathasan__Ureteral__PD-(L)1
 
 ##########################################################################
 

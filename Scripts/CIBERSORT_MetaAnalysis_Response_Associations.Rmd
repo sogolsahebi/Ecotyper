@@ -23,12 +23,9 @@ To aggregate immune cell-type associations derived from CIBERSORT deconvolution 
 2. **Cancer-Specific**: Unique associations within individual cancer types.  
 3. **Treatment-Specific**: Associations based on specific IO therapies.
 
-
-
 ### Purpose  
 
 This analysis aims to synthesize immune cell associations to better understand patterns predictive of therapeutic outcomes. The insights will guide the development of personalized immunotherapy strategies.
-
 
 ### Scope  
 
@@ -173,7 +170,6 @@ kable(pfs_meta_results,
 
 ```{r OS Pancancer}
 
-
 # 2. Meta-analysis for OS
 os_combined <- do.call(rbind, OS_results)
 os_combined <- os_combined[!is.na(os_combined$Coef), ]
@@ -218,6 +214,7 @@ kable(os_meta_results,
       col.names = c("Cell Type", "Coef", "SE", "CI Lower", "CI Upper", "P-value", "I2", "Q P-value", "FDR")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
   scroll_box(height = "400px")
+
 ```
 
 ##### 1.3 Response Pan-cancer 
@@ -273,8 +270,7 @@ colnames(response_meta_results)[colnames(response_meta_results) == "Gene"] <- "C
 response_meta_results$FDR <- p.adjust(response_meta_results$Pval, method = "BH")
 
 # Save and display Response results
-# write.csv(response_meta_results,file = file.path(output_dir,"Meta_analysis_Response_PanCancer.csv"),
-#            row.names = FALSE)
+# write.csv(response_meta_results,file = file.path(output_dir,"Meta_analysis_Response_PanCancer.csv"),row.names = FALSE)
 
 kable(response_meta_results, 
       caption = "Pan-Cancer Meta-analysis Results for Response", 

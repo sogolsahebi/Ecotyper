@@ -618,7 +618,6 @@ res.logreg <- res.logreg[order(res.logreg$FDR), ]
 
 # Display results in HTML format
 kable(res.logreg, format = "html", caption = "Association of CIBERSORT Cell Signatures with Response (R vs NR) in ICB Jung Dataset") %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>%
-  scroll_box(height = "400px")
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F) %>% scroll_box(height = "400px")
 
 ```

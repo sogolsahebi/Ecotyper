@@ -1,4 +1,5 @@
 "Study","N","Expression","Age_Median","Age_IQR","Age_NA","Female","Male","Sex_NA","Cancer_Type","Treatment_Type","No_Response","Response","No_Progression","Progressed","PFS_Median","PFS_IQR","Alive","Dead","OS_Median","OS_IQR"
+"ICB_Abacus__Bladder__PD-(L)1",84,"TPM",NA,NA,84,0,0,84,"Bladder","PD-1/PD-L1",23,17,0,0,NA,NA,0,0,NA,NA
 "ICB_Auslander__Melanoma__PD-(L)1",27,"TPM",72,28.5,0,0,0,27,"Melanoma","PD-1/PD-L1",26,1,0,0,NA,NA,0,0,NA,NA
 "ICB_Cloughesy__Brain__PD-(L)1",28,"TPM",63.2,11.2,0,17,11,0,"Brain","PD-1/PD-L1",21,1,1,27,2.6,3.4,8,20,9.1,7.4
 "ICB_Damrauer__Bladder__PD-(L)1",90,"TPM",70,14,0,34,56,0,"Bladder","PD-1/PD-L1",69,17,10,79,2.1,3.6,33,57,5.9,7.9
@@ -19,8 +20,6 @@
 "ICB_Miao1__Kidney__PD-(L)1",33,"TPM",64,8,0,9,24,0,"Kidney","PD-1/PD-L1",18,10,25,8,2.9,11.7,10,23,12.4,14.2
 "ICB_Padron__Pancreas__PD-(L)1",45,"TPM",62,12,0,19,26,0,"Pancreas","PD-1/PD-L1",20,3,6,39,5.8,6.2,11,34,9.7,11.3
 "ICB_Powles__Bladder__PD-(L)1",148,"TPM",NA,NA,148,0,0,148,"Bladder","PD-1/PD-L1",46,27,0,0,NA,NA,0,0,NA,NA
-"ICB_Prat__Lung__PD-(L)1",35,"log2gNor",59,19,0,8,27,0,"Lung","PD-1/PD-L1",18,10,10,25,3.2,4.7,0,0,NA,NA
-"ICB_Prat__Melanoma__PD-(L)1",25,"log2gNor",59,21,0,7,18,0,"Melanoma","PD-1/PD-L1",15,10,7,18,3.2,4.8,0,0,NA,NA
 "ICB_Puch__Melanoma__PD-(L)1",55,"TPM",NA,NA,55,0,0,55,"Melanoma","PD-1/PD-L1",35,14,0,0,NA,NA,0,0,NA,NA
 "ICB_Ravi__Lung__PD-(L)1",130,"TPM",64,15,1,70,60,0,"Lung","PD-1/PD-L1",62,45,27,91,4.1,7.9,62,63,10.7,14.6
 "ICB_Rittmeyer__Lung__PD-(L)1",344,"TPM",NA,NA,344,125,219,0,"Lung","PD-1/PD-L1",221,53,30,314,2.5,5.5,107,237,10.8,16.9
