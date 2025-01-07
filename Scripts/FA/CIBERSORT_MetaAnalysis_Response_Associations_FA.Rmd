@@ -1,0 +1,606 @@
+---
+title: "CIBERSORT_AllDatasets_Processing_Associations"
+author: "Nasim Bondar Sahebi"
+date: "2024-12-17"
+output:
+  html_document: default
+  pdf_document: default
+subtitle: '[EcoTyper_Project, Deconvolution Porcess](https://github.com/sogolsahebi/EcoTyper_Project)'
+params:
+  show_code: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+### Goal of Meta-analysis of CIBERSORT Results  
+
+To aggregate immune cell-type associations derived from CIBERSORT deconvolution across cancer datasets and IO outcomes, identifying immune signatures predictive of IO response (Responders vs. Non-Responders). The meta-analysis will integrate associations at the following levels:  
+1. **Pan-Cancer**: Trends across all cancer types.  
+2. **Cancer-Specific**: Unique associations within individual cancer types.  
+3. **Treatment-Specific**: Associations based on specific IO therapies.
+
+### Purpose  
+
+This analysis aims to synthesize immune cell associations to better understand patterns predictive of therapeutic outcomes. The insights will guide the development of personalized immunotherapy strategies.
+
+### Scope  
+
+1. **Analysis Levels**:  
+   - **Pan-Cancer**: Broad trends across cancers.  
+   - **Cancer-Specific**: Tailored insights for individual cancers.  
+   - **Treatment-Specific**: Analysis stratified by immunotherapy regimens.
+
+2. **Clinical Outcomes**: Focused on progression-free survival (PFS), overall survival (OS), and treatment response (Responders vs. Non-Responders).
+
+3. **Dataset Inclusion Criteria**:  
+   - RNA-seq data.  
+   - Minimum of 25 patients per dataset.  
+   - Full inclusion details and data processing steps are available at:  
+     - [EcoTyper Project Repository](https://github.com/sogolsahebi/EcoTyper_Project/)  
+     - [Dataset Processing Script](https://github.com/sogolsahebi/EcoTyper_Project/Scripts/CIBERSORT_AllDatasets_Processing_Associations.Rmd)
+
+
+## **Load Required Libraries**
+
+
+```{r libraries}
+library(SummarizedExperiment)
+library(MultiAssayExperiment)
+library(knitr)            
+library(kableExtra)       
+library(dplyr)            
+library(ggplot2)          
+library(meta)             
+library(IOBR)
+library(PredictioR)
+```
+
+### **Set Up Environment and Load Data**
+
+Display OS, PFS, and Response results from the previous script: [CIBERSORT_AllDatasets_Processing_Associations.Rmd](https://github.com/sogolsahebi/EcoTyper_Project/Scripts/CIBERSORT_AllDatasets_Processing_Associations.Rmd).
+
+######################## COMMENT ###################
+## Do you still need 'input_dir' to get access all data? It seems it hasn't called or used across script. 
+## Make sure all packages, defined directories, chunck names, caption of figures, summary or aims for each script (explained at the begining of script), etc are already used in the script
+
+```{r setup2}
+# Set base directory
+Base_dir <- "C:/Ecotyper_Project"
+
+# Define input and output directories
+input_dir <- file.path(Base_dir, "data/data_all")
+output_dir <- file.path(Base_dir, "outputs", "MetaAnalysis_outputs")
+
+# Load RData files for PFS, OS, and Response (Responders vs. Non-Responders)
+load("C:/Ecotyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_PFS_Cibersort.RData")
+load("C:/Ecotyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_OS_Cibersort.RData")
+load("C:/Ecotyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_Response_RvsNR_Cibersort.RData")
+
+# Remove problematic datasets
+Response_results <- Response_results[!names(Response_results) %in% c(
+  "ICB_IMmotion150__Kidney__PD-(L)1", 
+  "ICB_Limagne2__Lung__PD-(L)1", 
+  "ICB_Mariathasan__Ureteral__PD-(L)1"
+)]
+
+#example of displayong the resposne 
+PFS_example <- PFS_results[["ICB_Van_Allen__Melanoma__CTLA4"]]
+OS_example <- OS_results[["ICB_Van_Allen__Melanoma__CTLA4"]]
+Response_example <- Response_results[["ICB_Van_Allen__Melanoma__CTLA4"]]
+
+# Display the kable table
+# Display PFS Results
+kable(PFS_example, 
+      format = "html", 
+      caption = "PFS Results: ICB Van Allen, Melanoma, CTLA4") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+# Display OS Results
+kable(OS_example, 
+      format = "html", 
+      caption = "OS Results: ICB Van Allen, Melanoma, CTLA4") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+# Display Response Results
+kable(Response_example, 
+      format = "html", 
+      caption = "Response Results: ICB Van Allen, Melanoma, CTLA4") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+```
+
+#### 1. **Aggregating Associations through Meta-analysis (Pan-cancer)**
+
+##### 1.1 PFS Pan-cancer
+
+####################################### COMMENT ########################################
+## No need to re-do FDR correction on line 134 " p.adjust(pfs_combined$Pval, method = "BH")"
+## Any FDR corrections should be done per-study not across all studies (however it depends on research question and in our analyses, only per-study, which has done and you already have all results)
+## The same comment for OS and response. 
+
+```{r PFS Association with OS and PFS cell types with IO response, eval=TRUE}
+
+# 1. Meta-analysis for PFS
+pfs_combined <- do.call(rbind, PFS_results)
+pfs_combined <- pfs_combined[!is.na(pfs_combined$Coef), ]
+pfs_combined$FDR <- p.adjust(pfs_combined$Pval, method = "BH")
+
+pfs_cellsigs <- unique(pfs_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+pfs_meta_results <- lapply(pfs_cellsigs, function(cellsig) {
+  gene_data <- pfs_combined[pfs_combined$Gene == cellsig, ]
+  
+  res_meta <- metafun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    feature = cellsig,
+    cancer.spec = FALSE,
+    treatment.spec = FALSE
+  )
+  
+  # Extract meta-summary
+  summary <- res_meta$meta_summery
+  summary$Gene <- cellsig 
+  return(summary)
+})
+
+# Combine meta-analysis results for PFS
+pfs_meta_results <- do.call(rbind, pfs_meta_results)
+colnames(pfs_meta_results)[colnames(pfs_meta_results) == "Gene"] <- "CellType"
+pfs_meta_results$FDR <- p.adjust(pfs_meta_results$Pval, method = "BH")
+
+# write.csv(pfs_meta_results,file = file.path(output_dir, "Meta_analysis_PFS_PanCancer.csv"),row.names = FALSE)
+
+kable(pfs_meta_results, 
+      caption = "Pan-Cancer Meta-analysis Results for PFS", 
+      col.names = c("Cell Type", "Coef", "SE", "CI Lower", "CI Upper", "P-value", "I2", "Q P-value", "FDR")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+```
+
+
+##### 1.2 OS Pan-cancer
+
+```{r OS Pancancer}
+
+# 2. Meta-analysis for OS
+os_combined <- do.call(rbind, OS_results)
+os_combined <- os_combined[!is.na(os_combined$Coef), ]
+os_combined$FDR <- p.adjust(os_combined$Pval, method = "BH")
+
+os_cellsigs <- unique(os_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+os_meta_results <- lapply(os_cellsigs, function(cellsig) {
+  gene_data <- os_combined[os_combined$Gene == cellsig, ]
+  
+  res_meta <- metafun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    feature = cellsig,
+    cancer.spec = FALSE,
+    treatment.spec = FALSE
+  )
+  
+  # Extract meta-summary
+  summary <- res_meta$meta_summery
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+# Combine meta-analysis results for OS
+os_meta_results <- do.call(rbind, os_meta_results)
+colnames(os_meta_results)[colnames(os_meta_results) == "Gene"] <- "CellType"
+os_meta_results$FDR <- p.adjust(os_meta_results$Pval, method = "BH")
+
+# Save and display OS results
+# write.csv(os_meta_results, file = file.path(output_dir, "Meta_analysis_OS_PanCancer.csv"), 
+# row.names = FALSE)
+
+kable(os_meta_results, 
+      caption = "Pan-Cancer Meta-analysis Results for OS", 
+      col.names = c("Cell Type", "Coef", "SE", "CI Lower", "CI Upper", "P-value", "I2", "Q P-value", "FDR")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+```
+
+##### 1.3 Response Pan-cancer 
+
+```{r Response Pancancer}
+
+# 3. Meta-analysis for Response
+# Combined df Reponse 
+# 1. Identify the unique set of columns across all data frames
+all_columns <- unique(unlist(lapply(Response_results, colnames)))
+
+# 2: Align columns for each data frame
+Response_results_aligned <- lapply(Response_results, function(df) {
+  # Add missing columns with NA and order columns to match `all_columns`
+  df[, setdiff(all_columns, colnames(df))] <- NA
+  df <- df[, all_columns, drop = FALSE]
+  return(df)
+})
+
+# Step 3: Combine the aligned data frames
+response_combined <- do.call(rbind, Response_results_aligned)
+response_combined <- response_combined[!is.na(response_combined$Coef), ]
+response_combined$FDR <- p.adjust(response_combined$Pval, method = "BH")
+
+response_cellsigs <- unique(response_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+response_meta_results <- lapply(response_cellsigs, function(cellsig) {
+  gene_data <- response_combined[response_combined$Gene == cellsig, ]
+  
+  res_meta <- metafun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    feature = cellsig,
+    cancer.spec = FALSE,
+    treatment.spec = FALSE
+  )
+  
+  # Extract meta-summary
+  summary <- res_meta$meta_summery
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+# Combine meta-analysis results for Response
+response_meta_results <- do.call(rbind, response_meta_results)
+colnames(response_meta_results)[colnames(response_meta_results) == "Gene"] <- "CellType"
+response_meta_results$FDR <- p.adjust(response_meta_results$Pval, method = "BH")
+
+# Save and display Response results
+# write.csv(response_meta_results,file = file.path(output_dir,"Meta_analysis_Response_PanCancer.csv"),row.names = FALSE)
+
+kable(response_meta_results, 
+      caption = "Pan-Cancer Meta-analysis Results for Response", 
+      col.names = c("Cell Type", "Coef", "SE", "CI Lower", "CI Upper", "P-value", "I2", "Q P-value", "FDR")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+```
+
+#### 2. Aggregating Associations through Meta-analysis (Per-cancer)
+
+#### 2.1 PFS Per-Cancer
+
+```{r PFS per-cancer}
+
+# 1. Meta-analysis for PFS (Per-Cancer)
+pfs_combined <- do.call(rbind, PFS_results)
+pfs_combined <- pfs_combined[!is.na(pfs_combined$Coef), ]
+pfs_combined$FDR <- p.adjust(pfs_combined$Pval, method = "BH")
+
+pfs_cellsigs <- unique(pfs_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+pfs_meta_results_percancer <- lapply(pfs_cellsigs, function(cellsig) {
+  gene_data <- pfs_combined[pfs_combined$Gene == cellsig, ]
+  
+  res_meta <- metaPerCanfun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    feature = cellsig,
+    cancer.spec = TRUE
+  )
+  
+  # Extract meta-summary
+  summary <- do.call(rbind, lapply(res_meta, function(x) x$meta_summery))
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+# Combine meta-analysis results for PFS (Per-Cancer)
+
+pfs_meta_results_percancer <- do.call(rbind, pfs_meta_results_percancer)
+colnames(pfs_meta_results_percancer)[colnames(pfs_meta_results_percancer) == "Gene"] <- "Cell Typer"
+
+# Split by Cancer_type, apply BH adjustment, and combine results
+pfs_meta_results_percancer <- do.call(rbind, lapply(split(pfs_meta_results_percancer, pfs_meta_results_percancer$Cancer_type), function(df) {
+  df$FDR <- p.adjust(df$Pval, method = "BH")
+  return(df)
+}))
+
+rownames(pfs_meta_results_percancer) <- NULL
+
+# Save and display PFS results
+# write.csv(pfs_meta_results_percancer,file = file.path(output_dir, "Meta_analysis_PFS_PerCancer.csv"),row.names = FALSE)
+
+kable(pfs_meta_results_percancer, 
+      caption = "Per-Cancer Meta-analysis Results for PFS") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+```
+
+#### 2.2 OS Per-Cancer
+
+```{r OS per-cancer}
+# 2. Meta-analysis for OS (Per-Cancer)
+os_combined <- do.call(rbind, OS_results)
+os_combined <- os_combined[!is.na(os_combined$Coef), ]
+os_combined$FDR <- p.adjust(os_combined$Pval, method = "BH")
+
+os_cellsigs <- unique(os_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+os_meta_results_percancer <- lapply(os_cellsigs, function(cellsig) {
+  gene_data <- os_combined[os_combined$Gene == cellsig, ]
+  
+  res_meta <- metaPerCanfun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    feature = cellsig,
+    cancer.spec = TRUE
+  )
+  
+  # Extract meta-summary
+  summary <- do.call(rbind, lapply(res_meta, function(x) x$meta_summery))
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+# Combine meta-analysis results for OS (Per-Cancer)
+os_meta_results_percancer <- do.call(rbind, os_meta_results_percancer)
+colnames(os_meta_results_percancer)[colnames(os_meta_results_percancer) == "Gene"] <- "CellType"
+
+os_meta_results_percancer <- do.call(rbind, lapply(split(os_meta_results_percancer, os_meta_results_percancer$Cancer_type), function(df) {
+  df$FDR <- p.adjust(df$Pval, method = "BH")
+  return(df)
+}))
+
+os_meta_results_percancer$FDR <- p.adjust(os_meta_results_percancer$Pval, method = "BH")
+rownames(os_meta_results_percancer) <- NULL
+
+# Save and display OS results
+#write.csv(os_meta_results_percancer,file = file.path(output_dir, "Meta_analysis_OS_PerCancer.csv"),row.names = FALSE)
+
+kable(os_meta_results_percancer, 
+      caption = "Per-Cancer Meta-analysis Results for OS") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+```
+
+#### 2.3 Response Per-Cancer
+
+```{r Response per-cancer}
+
+# 3. Meta-analysis for Response (Per-Cancer)
+response_combined <- do.call(rbind, Response_results)
+response_combined <- response_combined[!is.na(response_combined$Coef), ]
+response_combined$FDR <- p.adjust(response_combined$Pval, method = "BH")
+
+response_cellsigs <- unique(response_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+response_meta_results_percancer <- lapply(response_cellsigs, function(cellsig) {
+  gene_data <- response_combined[response_combined$Gene == cellsig, ]
+  
+  res_meta <- metaPerCanfun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    feature = cellsig,
+    cancer.spec = TRUE
+  )
+  
+  # Extract meta-summary
+  summary <- do.call(rbind, lapply(res_meta, function(x) x$meta_summery))
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+# Combine meta-analysis results for Response (Per-Cancer)
+response_meta_results_percancer <- do.call(rbind, response_meta_results_percancer)
+colnames(response_meta_results_percancer)[colnames(response_meta_results_percancer) == "Gene"] <- "CellType"
+
+response_meta_results_percancer <- do.call(rbind, lapply(split(response_meta_results_percancer, response_meta_results_percancer$Cancer_type), function(df) {
+  df$FDR <- p.adjust(df$Pval, method = "BH")
+  return(df)
+}))
+
+response_meta_results_percancer$FDR <- p.adjust(response_meta_results_percancer$Pval, method = "BH")
+rownames(response_meta_results_percancer) <- NULL
+
+# Save and display Response results
+ # write.csv(response_meta_results_percancer,file = file.path(output_dir, "Meta_analysis_Response_PerCancer.csv"),row.names = FALSE)
+
+
+kable(response_meta_results_percancer, 
+      caption = "Per-Cancer Meta-analysis Results for Response") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+```
+
+#### 2. Aggregating Associations through Meta-analysis (Per-treatment)
+
+#### 3.1 PFS Per-treatment
+
+```{r PFS per-treatment}
+
+# 1. Meta-analysis for PFS (Per-Treatment)
+
+# warninigs: Warning: Use argument 'common' instead of 'fixed' (deprecated).
+
+pfs_cellsigs <- unique(pfs_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+pfs_meta_results_pertreatment <- lapply(pfs_cellsigs, function(cellsig) {
+  gene_data <- pfs_combined[pfs_combined$Gene == cellsig, ]
+  
+  res_meta <- metaPerTreatmentfun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    treatment.spec = TRUE,
+    feature = cellsig
+  )
+  
+  # Extract meta-summary
+  summary <- do.call(rbind, lapply(res_meta, function(x) x$meta_summery))
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+
+# Combine meta-analysis results for PFS (Per-Treatment)
+pfs_meta_results_pertreatment <- do.call(rbind, pfs_meta_results_pertreatment)
+colnames(pfs_meta_results_pertreatment)[colnames(pfs_meta_results_pertreatment) == "Gene"] <- "CellType"
+pfs_meta_results_pertreatment$FDR <- p.adjust(pfs_meta_results_pertreatment$Pval, method = "BH")
+rownames(pfs_meta_results_pertreatment) <- NULL
+
+# Save and display PFS results
+# write.csv(pfs_meta_results_pertreatment,file = file.path(output_dir, "Meta_analysis_PFS_PerTreatment.csv"),row.names = FALSE)
+
+kable(pfs_meta_results_pertreatment, 
+      caption = "Per-Treatment Meta-analysis Results for PFS") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+```
+
+
+#### 3.2 OS Per-treatment
+
+```{r OS per-treatment}
+
+# 2. Meta-analysis for OS (Per-Treatment)
+os_combined <- do.call(rbind, OS_results)
+os_combined <- os_combined[!is.na(os_combined$Coef), ]
+os_combined$FDR <- p.adjust(os_combined$Pval, method = "BH")
+
+os_cellsigs <- unique(os_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+os_meta_results_pertreatment <- lapply(os_cellsigs, function(cellsig) {
+  gene_data <- os_combined[os_combined$Gene == cellsig, ]
+  
+  res_meta <- metaPerTreatmentfun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    treatment.spec = TRUE,
+    feature = cellsig
+  )
+  
+  # Extract meta-summary
+  summary <- do.call(rbind, lapply(res_meta, function(x) x$meta_summery))
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+# Combine meta-analysis results for OS (Per-Treatment)
+os_meta_results_pertreatment <- do.call(rbind, os_meta_results_pertreatment)
+colnames(os_meta_results_pertreatment)[colnames(os_meta_results_pertreatment) == "Gene"] <- "CellType"
+os_meta_results_pertreatment$FDR <- p.adjust(os_meta_results_pertreatment$Pval, method = "BH")
+
+# Save and display OS results
+# write.csv(os_meta_results_pertreatment, file = file.path(output_dir, "Meta_analysis_OS_PerTreatment.csv"), row.names = FALSE)
+
+kable(os_meta_results_pertreatment, 
+      caption = "Per-Treatment Meta-analysis Results for OS") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+```
+
+#### 3.3 Response Per-treatment
+
+```{r Response per-treatment}
+
+# 3. Meta-analysis for Response (Per-Treatment)
+response_combined <- do.call(rbind, Response_results)
+response_combined <- response_combined[!is.na(response_combined$Coef), ]
+response_combined$FDR <- p.adjust(response_combined$Pval, method = "BH")
+
+response_cellsigs <- unique(response_combined$Gene)
+
+# Perform meta-analysis for each cell signature
+response_meta_results_pertreatment <- lapply(response_cellsigs, function(cellsig) {
+  gene_data <- response_combined[response_combined$Gene == cellsig, ]
+  
+  res_meta <- metaPerTreatmentfun(
+    coef = gene_data$Coef,
+    se = gene_data$SE,
+    study = gene_data$Study,
+    pval = gene_data$Pval,
+    n = gene_data$N,
+    cancer.type = gene_data$Cancer_type,
+    treatment = gene_data$Treatment,
+    treatment.spec = TRUE,
+    feature = cellsig
+  )
+  
+  # Extract meta-summary
+  summary <- do.call(rbind, lapply(res_meta, function(x) x$meta_summery))
+  summary$Gene <- cellsig
+  return(summary)
+})
+
+# Combine meta-analysis results for Response (Per-Treatment)
+response_meta_results_pertreatment <- do.call(rbind, response_meta_results_pertreatment)
+colnames(response_meta_results_pertreatment)[colnames(response_meta_results_pertreatment) == "Gene"] <- "CellType"
+response_meta_results_pertreatment$FDR <- p.adjust(response_meta_results_pertreatment$Pval, method = "BH")
+rownames(response_meta_results_pertreatment) <- NULL
+
+# Save and display Response results
+# write.csv(response_meta_results_pertreatment, file = file.path(output_dir, "Meta_analysis_Response_PerTreatment.csv"),row.names = FALSE)
+
+kable(response_meta_results_pertreatment, 
+      caption = "Per-Treatment Meta-analysis Results for Response") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  scroll_box(height = "400px")
+
+```
+
+############## COMMENT ###################
+## It is great to have a visualization figure including volcano for meta results and forestplot for only significant associated cell types. There is forestplot function in package

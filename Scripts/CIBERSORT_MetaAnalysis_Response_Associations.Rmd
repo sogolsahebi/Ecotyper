@@ -63,18 +63,20 @@ library(PredictioR)
 
 Display OS, PFS, and Response results from the previous script: [CIBERSORT_AllDatasets_Processing_Associations.Rmd](https://github.com/sogolsahebi/EcoTyper_Project/Scripts/CIBERSORT_AllDatasets_Processing_Associations.Rmd).
 
-```{r setup2}
-# Set base directory
-Base_dir <- "~/BHK lab/Ecotyper_Project/"
+```{r data preparation}
+
+# TODO: Make sure all packages, defined directories, chunck names, caption of figures, summary or aims for each script (explained at the begining of script), etc are already used in the script
+
+Base_dir <- "~/BHK lab/PredictIO/PredictIO_EcoTyper/"
 
 # Define input and output directories
-input_dir <- file.path(Base_dir, "data_all")
 output_dir <- file.path(Base_dir, "outputs", "MetaAnalysis_outputs")
+input_dir <- file.path(Base_dir, "outputs", "Cibersort_Alldatasets_outputs")
 
 # Load RData files for PFS, OS, and Response (Responders vs. Non-Responders)
-load("~/BHK lab/EcoTyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_PFS_Cibersort.RData")
-load("~/BHK lab/EcoTyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_OS_Cibersort.RData")
-load("~/BHK lab/EcoTyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_Response_RvsNR_Cibersort.RData")
+load(file.path(input_dir, "All_Association_PFS_Cibersort.RData"))
+load(file.path(input_dir, "All_Association_OS_Cibersort.RData"))
+load(file.path(input_dir, "All_Association_Response_RvsNR_Cibersort.RData"))
 
 # Remove problematic datasets
 Response_results <- Response_results[!names(Response_results) %in% c(
@@ -124,7 +126,6 @@ kable(Response_example,
 # 1. Meta-analysis for PFS
 pfs_combined <- do.call(rbind, PFS_results)
 pfs_combined <- pfs_combined[!is.na(pfs_combined$Coef), ]
-pfs_combined$FDR <- p.adjust(pfs_combined$Pval, method = "BH")
 
 pfs_cellsigs <- unique(pfs_combined$Gene)
 
@@ -160,8 +161,7 @@ pfs_meta_results$FDR <- p.adjust(pfs_meta_results$Pval, method = "BH")
 
 kable(pfs_meta_results, 
       caption = "Pan-Cancer Meta-analysis Results for PFS", 
-      col.names = c("Cell Type", "Coef", "SE", "CI Lower", "CI Upper", "P-value", "I2", "Q P-value", "FDR")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+      col.names = c("Cell Type", "Coef", "SE", "CI Lower", "CI Upper", "P-value", "I2", "Q P-value", "FDR")) %>%kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
   scroll_box(height = "400px")
 ```
 
@@ -173,7 +173,6 @@ kable(pfs_meta_results,
 # 2. Meta-analysis for OS
 os_combined <- do.call(rbind, OS_results)
 os_combined <- os_combined[!is.na(os_combined$Coef), ]
-os_combined$FDR <- p.adjust(os_combined$Pval, method = "BH")
 
 os_cellsigs <- unique(os_combined$Gene)
 
@@ -206,8 +205,7 @@ colnames(os_meta_results)[colnames(os_meta_results) == "Gene"] <- "CellType"
 os_meta_results$FDR <- p.adjust(os_meta_results$Pval, method = "BH")
 
 # Save and display OS results
-# write.csv(os_meta_results, file = file.path(output_dir, "Meta_analysis_OS_PanCancer.csv"), 
-# row.names = FALSE)
+# write.csv(os_meta_results, file = file.path(output_dir, "Meta_analysis_OS_PanCancer.csv"), row.names = FALSE)
 
 kable(os_meta_results, 
       caption = "Pan-Cancer Meta-analysis Results for OS", 
@@ -237,7 +235,6 @@ Response_results_aligned <- lapply(Response_results, function(df) {
 # Step 3: Combine the aligned data frames
 response_combined <- do.call(rbind, Response_results_aligned)
 response_combined <- response_combined[!is.na(response_combined$Coef), ]
-response_combined$FDR <- p.adjust(response_combined$Pval, method = "BH")
 
 response_cellsigs <- unique(response_combined$Gene)
 
@@ -590,6 +587,8 @@ kable(response_meta_results_pertreatment,
       caption = "Per-Treatment Meta-analysis Results for Response") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
   scroll_box(height = "400px")
+
+#TODO: add  visualization figure including volcano for meta results and forestplot for only significant associated cell types. There is forestplot function in package
 
 ```
 

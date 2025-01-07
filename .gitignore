@@ -47,5 +47,3 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
-# Ignore Sankey files
-outputs/Dataprocessing_outputs/Plots/Sankey_Cancer_Treatments_Endpoints_*

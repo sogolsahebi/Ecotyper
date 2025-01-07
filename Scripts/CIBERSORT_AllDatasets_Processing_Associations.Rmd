@@ -68,7 +68,8 @@ Set the base directory for the project and load the processed `combined_clin` da
 
 ```{r setup2}
 # Set base directory
-Base_dir <- "~/BHK lab/Ecotyper_Project/"
+Base_dir <- "~/BHK lab/PredictIO/PredictIO_EcoTyper/"
+
 input_dir <- file.path(Base_dir, "data_all")
 output_dir <- file.path(Base_dir, "outputs", "Cibersort_Alldatasets_outputs")
 

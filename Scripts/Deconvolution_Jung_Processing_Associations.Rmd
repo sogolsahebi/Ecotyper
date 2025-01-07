@@ -73,14 +73,14 @@ The RNA-seq expression values are originally in **log2(TPM + 0.001)** format and
 
 # Environment Setup
 
-Base_dir <- "~/BHK lab/Ecotyper_Project/"
+Base_dir <- "~/BHK lab/PredictIO/PredictIO_EcoTyper/"
 
 input_dir <- file.path(Base_dir, "data_all")
 output_dir <- file.path(Base_dir, "outputs", "Deconvolution_Jung_outputs")
 
 ICB_jung <- get(load(file.path(input_dir, "ICB_Jung__Lung__PD-(L)1.rda")))
 clin_jung <- as.data.frame(colData(ICB_jung))  # Clinical data
-expr_Jung <- log2((2^(ICB_jung@assays@data$gene_expression) - 0.001) + 1)  # Rna-seq: Convert to log2(TPM + 1)
+expr_Jung <- log2((2^(assay(ICB_jung)) - 0.001) + 1)  # Rna-seq: Convert to log2(TPM + 1)
                   
 # Display first two rows of clinical data
 kable(head(clin_jung), caption = "First Two Rows of Clinical Data")

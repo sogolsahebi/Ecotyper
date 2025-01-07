@@ -649,17 +649,18 @@ library(PredictioR)</code></pre>
 <div id="set-up-environment-and-load-data" class="section level3">
 <h3><strong>Set Up Environment and Load Data</strong></h3>
 <p>Display OS, PFS, and Response results from the previous script: <a href="https://github.com/sogolsahebi/EcoTyper_Project/Scripts/CIBERSORT_AllDatasets_Processing_Associations.Rmd">CIBERSORT_AllDatasets_Processing_Associations.Rmd</a>.</p>
-<pre class="r"><code># Set base directory
-Base_dir &lt;- &quot;~/BHK lab/Ecotyper_Project/&quot;
+<pre class="r"><code># TODO: Make sure all packages, defined directories, chunck names, caption of figures, summary or aims for each script (explained at the begining of script), etc are already used in the script
+
+Base_dir &lt;- &quot;~/BHK lab/PredictIO/PredictIO_EcoTyper/&quot;
 
 # Define input and output directories
-input_dir &lt;- file.path(Base_dir, &quot;data_all&quot;)
 output_dir &lt;- file.path(Base_dir, &quot;outputs&quot;, &quot;MetaAnalysis_outputs&quot;)
+input_dir &lt;- file.path(Base_dir, &quot;outputs&quot;, &quot;Cibersort_Alldatasets_outputs&quot;)
 
 # Load RData files for PFS, OS, and Response (Responders vs. Non-Responders)
-load(&quot;~/BHK lab/EcoTyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_PFS_Cibersort.RData&quot;)
-load(&quot;~/BHK lab/EcoTyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_OS_Cibersort.RData&quot;)
-load(&quot;~/BHK lab/EcoTyper_Project/outputs/Cibersort_Alldatasets_outputs/All_Association_Response_RvsNR_Cibersort.RData&quot;)
+load(file.path(input_dir, &quot;All_Association_PFS_Cibersort.RData&quot;))
+load(file.path(input_dir, &quot;All_Association_OS_Cibersort.RData&quot;))
+load(file.path(input_dir, &quot;All_Association_Response_RvsNR_Cibersort.RData&quot;))
 
 # Remove problematic datasets
 Response_results &lt;- Response_results[!names(Response_results) %in% c(
@@ -3080,7 +3081,6 @@ CTLA4
 <pre class="r"><code># 1. Meta-analysis for PFS
 pfs_combined &lt;- do.call(rbind, PFS_results)
 pfs_combined &lt;- pfs_combined[!is.na(pfs_combined$Coef), ]
-pfs_combined$FDR &lt;- p.adjust(pfs_combined$Pval, method = &quot;BH&quot;)
 
 pfs_cellsigs &lt;- unique(pfs_combined$Gene)
 
@@ -3116,8 +3116,7 @@ pfs_meta_results$FDR &lt;- p.adjust(pfs_meta_results$Pval, method = &quot;BH&quo
 
 kable(pfs_meta_results, 
       caption = &quot;Pan-Cancer Meta-analysis Results for PFS&quot;, 
-      col.names = c(&quot;Cell Type&quot;, &quot;Coef&quot;, &quot;SE&quot;, &quot;CI Lower&quot;, &quot;CI Upper&quot;, &quot;P-value&quot;, &quot;I2&quot;, &quot;Q P-value&quot;, &quot;FDR&quot;)) %&gt;%
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;), full_width = FALSE) %&gt;%
+      col.names = c(&quot;Cell Type&quot;, &quot;Coef&quot;, &quot;SE&quot;, &quot;CI Lower&quot;, &quot;CI Upper&quot;, &quot;P-value&quot;, &quot;I2&quot;, &quot;Q P-value&quot;, &quot;FDR&quot;)) %&gt;%kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;), full_width = FALSE) %&gt;%
   scroll_box(height = &quot;400px&quot;)</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; ">
 <table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -3803,7 +3802,6 @@ Neutrophils
 <pre class="r"><code># 2. Meta-analysis for OS
 os_combined &lt;- do.call(rbind, OS_results)
 os_combined &lt;- os_combined[!is.na(os_combined$Coef), ]
-os_combined$FDR &lt;- p.adjust(os_combined$Pval, method = &quot;BH&quot;)
 
 os_cellsigs &lt;- unique(os_combined$Gene)
 
@@ -3836,8 +3834,7 @@ colnames(os_meta_results)[colnames(os_meta_results) == &quot;Gene&quot;] &lt;- &
 os_meta_results$FDR &lt;- p.adjust(os_meta_results$Pval, method = &quot;BH&quot;)
 
 # Save and display OS results
-# write.csv(os_meta_results, file = file.path(output_dir, &quot;Meta_analysis_OS_PanCancer.csv&quot;), 
-# row.names = FALSE)
+# write.csv(os_meta_results, file = file.path(output_dir, &quot;Meta_analysis_OS_PanCancer.csv&quot;), row.names = FALSE)
 
 kable(os_meta_results, 
       caption = &quot;Pan-Cancer Meta-analysis Results for OS&quot;, 
@@ -4541,7 +4538,6 @@ Response_results_aligned &lt;- lapply(Response_results, function(df) {
 # Step 3: Combine the aligned data frames
 response_combined &lt;- do.call(rbind, Response_results_aligned)
 response_combined &lt;- response_combined[!is.na(response_combined$Coef), ]
-response_combined$FDR &lt;- p.adjust(response_combined$Pval, method = &quot;BH&quot;)
 
 response_cellsigs &lt;- unique(response_combined$Gene)
 
@@ -9721,7 +9717,7 @@ response_meta_results_percancer$FDR &lt;- p.adjust(response_meta_results_percanc
 rownames(response_meta_results_percancer) &lt;- NULL
 
 # Save and display Response results
-# write.csv(response_meta_results_percancer,file = file.path(Base_dir, &quot;Meta_analysis_Response_PerCancer2.csv&quot;),row.names = FALSE)
+ # write.csv(response_meta_results_percancer,file = file.path(output_dir, &quot;Meta_analysis_Response_PerCancer.csv&quot;),row.names = FALSE)
 
 
 kable(response_meta_results_percancer, 
@@ -15034,6 +15030,7 @@ Neutrophils
 </tbody>
 </table>
 </div>
+<pre class="r"><code>#TODO: add  visualization figure including volcano for meta results and forestplot for only significant associated cell types. There is forestplot function in package</code></pre>
 </div>
 </div>
 </div>
